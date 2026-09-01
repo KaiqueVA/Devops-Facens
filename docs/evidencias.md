@@ -39,3 +39,19 @@ Arquivos escritos primeiro:
 ```
 
 > RED confirmado: 25 testes executados, 0 passando na regra de negócio.
+
+### GREEN — `mvn test` (implementação mínima de `CertificadoService.submeter`)
+
+Implementação inline no serviço: busca aluno e categoria, valida carga horária
+(1..200), valida data (não futura / não anterior ao ingresso), checa duplicidade
+e persiste com status `EM_ANALISE`.
+
+```
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0 -- in CertificadoServiceTest
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0 -- in RunCucumberTest
+[INFO] Results:
+[INFO] Tests run: 25, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+```
+
+> GREEN confirmado: 25 testes passando (13 unidade + 12 cenários Gherkin da US-01).
