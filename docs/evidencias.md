@@ -55,3 +55,14 @@ e persiste com status `EM_ANALISE`.
 ```
 
 > GREEN confirmado: 25 testes passando (13 unidade + 12 cenários Gherkin da US-01).
+
+### BLUE — refatoração `extrai CertificadoValidator`
+
+As validações de carga horária e data saíram do serviço para a classe de domínio
+pura `CertificadoValidator` (sem anotação Spring), com teste de unidade dedicado
+`CertificadoValidatorTest` + `EntidadesDominioTest`. Testes seguem verdes.
+
+```
+[INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS   (mvn clean verify — JaCoCo 100% linha/branch em domain e service)
+```
