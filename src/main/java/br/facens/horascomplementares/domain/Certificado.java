@@ -32,6 +32,8 @@ public class Certificado {
     @Enumerated(EnumType.STRING)
     private StatusCertificado status;
 
+    private String justificativaReprovacao;
+
     protected Certificado() {
     }
 
@@ -70,5 +72,17 @@ public class Certificado {
 
     public StatusCertificado getStatus() {
         return status;
+    }
+
+    public String getJustificativaReprovacao() {
+        return justificativaReprovacao;
+    }
+
+    public void aprovar() {
+        throw new UnsupportedOperationException("aprovar ainda nao implementado");
+    }
+
+    public void reprovar(String justificativa) {
+        throw new UnsupportedOperationException("reprovar ainda nao implementado");
     }
 }

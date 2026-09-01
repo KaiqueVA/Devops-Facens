@@ -66,3 +66,28 @@ pura `CertificadoValidator` (sem anotação Spring), com teste de unidade dedica
 [INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS   (mvn clean verify — JaCoCo 100% linha/branch em domain e service)
 ```
+
+---
+
+## US-02 — Validação pelo coordenador (autor: Micael Teodoro de Almeida)
+
+### RED — `mvn test`
+
+Escritos primeiro: `us02_validacao_coordenador.feature`, `ValidacaoCoordenadorSteps`,
+`ValidacaoServiceTest`, `CertificadoTransicaoTest`. Métodos `Certificado.aprovar`,
+`Certificado.reprovar` e `ValidacaoService.aprovar/reprovar` apenas como esqueleto
+(`UnsupportedOperationException`).
+
+```
+[INFO]  CertificadoServiceTest        Tests run: 13, Failures: 0, Errors: 0   (US-01 continua verde)
+[ERROR] ValidacaoServiceTest          Tests run: 6,  Failures: 3, Errors: 3
+[ERROR] CertificadoTransicaoTest      Tests run: 12, Failures: 6, Errors: 6
+[ERROR] RunCucumberTest               Tests run: 20, Failures: 0, Errors: 8   (8 cenarios da US-02)
+[ERROR] Tests run: 62, Failures: 9, Errors: 17, Skipped: 0
+[INFO] BUILD FAILURE
+
+java.lang.UnsupportedOperationException: aprovar ainda nao implementado
+java.lang.UnsupportedOperationException: reprovar ainda nao implementado
+```
+
+> RED confirmado: regras de transição de status e de justificativa ainda não existem.
