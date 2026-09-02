@@ -4,7 +4,9 @@ Este documento reúne as saídas de terminal que comprovam o processo. Para cada
 User Story há a saída do `mvn test` **falhando** (RED, testes escritos antes da
 implementação) e depois **passando** (GREEN, implementação mínima).
 
-O comando usado foi `mvn test` (Maven 3.9.9, Temurin/OpenJDK 17).
+O comando usado foi `./mvnw test` (Maven 3.9.9 via wrapper, OpenJDK 17).
+Números de teste incluem os cenários Gherkin já implementados das US anteriores —
+por isso o total cresce a cada feature (US-01: 25 → US-02: 65 → US-03: 91 → +REST: 103).
 
 ---
 
@@ -168,3 +170,35 @@ A aplicação do teto virou a fábrica `ContribuicaoCategoria.aplicarTeto(catego
 [INFO] Tests run: 93, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS   (mvn clean verify — JaCoCo 100% linha/branch em domain e service)
 ```
+
+---
+
+## Fechamento — `./mvnw clean verify` na entrega
+
+Após a camada REST (controllers + `@RestControllerAdvice` + `ApiHorasComplementaresTest`):
+
+```
+[INFO] --- jacoco:0.8.12:check (jacoco-check) ---
+[INFO] All coverage checks have been met.
+[INFO]
+[INFO] Results:
+[INFO] Tests run: 103, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO] BUILD SUCCESS
+```
+
+Cobertura final (regra exige 1.00 em `domain` e `service`):
+
+| Pacote | Linhas | Branches |
+|--------|--------|----------|
+| `domain`           | 110/110 (100%) | 18/18 (100%) |
+| `domain.exception` | 20/20 (100%)   | —            |
+| `service`          | 54/54 (100%)   | 2/2 (100%)   |
+
+### Mapa dos commits (evidência do ciclo)
+
+| US | RED | GREEN | BLUE |
+|----|-----|-------|------|
+| US-01 Submissão            | `red(us01)` 4edf8d4 | `green(us01)` 0ecff93 | `blue(us01)` 6b318ad — extrai `CertificadoValidator` |
+| US-02 Validação            | `red(us02)` 6f01b68 | `green(us02)` 0f526ec | `blue(us02)` e83e1ab — extrai `Justificativa` |
+| US-03 Teto por categoria   | `red(us03)` 65af4d1 | `green(us03)` 44c8518 | `blue(us03)` f1385a3 — move regra p/ `ContribuicaoCategoria` |
