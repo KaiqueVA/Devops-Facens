@@ -8,6 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+import br.facens.horascomplementares.domain.exception.CertificadoImutavelException;
+import br.facens.horascomplementares.domain.exception.JustificativaInsuficienteException;
+import br.facens.horascomplementares.domain.exception.TransicaoStatusInvalidaException;
+
 import java.time.LocalDate;
 
 @Entity
@@ -78,11 +82,28 @@ public class Certificado {
         return justificativaReprovacao;
     }
 
+    private static final int TAMANHO_MINIMO_JUSTIFICATIVA = 10;
+
     public void aprovar() {
-        throw new UnsupportedOperationException("aprovar ainda nao implementado");
+        garantirQuePodeSerValidado();
+        this.status = StatusCertificado.APROVADO;
     }
 
     public void reprovar(String justificativa) {
-        throw new UnsupportedOperationException("reprovar ainda nao implementado");
+        garantirQuePodeSerValidado();
+        if (justificativa == null || justificativa.trim().length() < TAMANHO_MINIMO_JUSTIFICATIVA) {
+            throw new JustificativaInsuficienteException(TAMANHO_MINIMO_JUSTIFICATIVA);
+        }
+        this.status = StatusCertificado.REPROVADO;
+        this.justificativaReprovacao = justificativa;
+    }
+
+    private void garantirQuePodeSerValidado() {
+        if (this.status == StatusCertificado.APROVADO) {
+            throw new CertificadoImutavelException();
+        }
+        if (this.status != StatusCertificado.EM_ANALISE) {
+            throw new TransicaoStatusInvalidaException(this.status);
+        }
     }
 }

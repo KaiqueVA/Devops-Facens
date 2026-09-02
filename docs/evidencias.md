@@ -91,3 +91,19 @@ java.lang.UnsupportedOperationException: reprovar ainda nao implementado
 ```
 
 > RED confirmado: regras de transição de status e de justificativa ainda não existem.
+
+### GREEN — `mvn test`
+
+`Certificado.aprovar()` / `reprovar(justificativa)` com guarda de status
+(`EM_ANALISE` obrigatório, `APROVADO` imutável) e mínimo de 10 caracteres na
+justificativa. `ValidacaoService` orquestra e grava `HistoricoValidacao`.
+
+```
+[INFO] ValidacaoServiceTest      Tests run: 6,  Failures: 0, Errors: 0
+[INFO] CertificadoTransicaoTest  Tests run: 12, Failures: 0, Errors: 0
+[INFO] RunCucumberTest           Tests run: 20, Failures: 0, Errors: 0
+[INFO] Tests run: 65, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+```
+
+> GREEN confirmado: 65 testes passando (20 cenários Gherkin — US-01 + US-02).
