@@ -1,20 +1,41 @@
+### Maven / build ###
 target/
+build/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+*.jar.original
+dependency-reduced-pom.xml
+.flattened-pom.xml
+
+### Java ###
+*.class
+hs_err_pid*
+replay_pid*
+
+### Testes / cobertura ###
+*.exec
+jacoco.exec
+target/site/jacoco/
+surefire-reports/
+failsafe-reports/
+
+### Banco de dados H2 (em memória, mas gera arquivos se a URL mudar) ###
+*.db
+*.mv.db
+*.trace.db
 
 ### IntelliJ IDEA ###
 .idea/
 *.iws
 *.iml
 *.ipr
+out/
 
 ### Eclipse ###
 .apt_generated
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 
@@ -24,13 +45,15 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
 
 ### VS Code ###
 .vscode/
 
-### Mac ###
+### Sistema operacional ###
 .DS_Store
+Thumbs.db
 
-### Logs ###
+### Logs e temporários ###
 *.log
+*.tmp
+*.bak
