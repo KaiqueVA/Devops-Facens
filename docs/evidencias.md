@@ -107,3 +107,14 @@ justificativa. `ValidacaoService` orquestra e grava `HistoricoValidacao`.
 ```
 
 > GREEN confirmado: 65 testes passando (20 cenários Gherkin — US-01 + US-02).
+
+### BLUE — refatoração `extrai Justificativa`
+
+Objeto de valor `Justificativa` (domínio puro) encapsula a regra de tamanho
+mínimo; `Certificado.reprovar` delega a validação a ele. Novos `JustificativaTest`
+e cobertura de `HistoricoValidacao`.
+
+```
+[INFO] Tests run: 74, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS   (mvn clean verify — JaCoCo 100% linha/branch em domain e service)
+```
