@@ -141,3 +141,19 @@ CalculadoraDeHorasTest.totalGeralNuncaPassaDe200 » UnsupportedOperation calcula
 ```
 
 > RED confirmado: cálculo de teto por categoria e limite geral de 200h ainda não existem.
+
+### GREEN — `mvn test`
+
+`CalculadoraDeHoras.calcular` agrupa os certificados aprovados por categoria,
+aplica `min(horas, teto)` em cada uma e `min(total, 200)` no geral. `HorasService`
+carrega apenas os `APROVADO` do aluno e delega ao domínio.
+
+```
+[INFO] CalculadoraDeHorasTest  Tests run: 7,  Failures: 0, Errors: 0
+[INFO] HorasServiceTest        Tests run: 2,  Failures: 0, Errors: 0
+[INFO] RunCucumberTest         Tests run: 28, Failures: 0, Errors: 0
+[INFO] Tests run: 91, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+```
+
+> GREEN confirmado: 91 testes passando (28 cenários Gherkin — US-01 + US-02 + US-03).
