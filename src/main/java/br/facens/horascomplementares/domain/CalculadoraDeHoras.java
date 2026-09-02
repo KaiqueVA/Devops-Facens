@@ -13,24 +13,10 @@ public class CalculadoraDeHoras {
     public static final int TOTAL_MAXIMO = 200;
 
     public ResumoHoras calcular(List<Certificado> certificadosAprovados) {
-        Map<String, Categoria> categoriaPorNome = new LinkedHashMap<>();
-        Map<String, Integer> horasEnviadasPorCategoria = new LinkedHashMap<>();
-        for (Certificado certificado : certificadosAprovados) {
-            Categoria categoria = certificado.getCategoria();
-            categoriaPorNome.putIfAbsent(categoria.getNome(), categoria);
-            horasEnviadasPorCategoria.merge(categoria.getNome(), certificado.getCargaHoraria(), Integer::sum);
-        }
+        List<ContribuicaoCategoria> contribuicoes = contribuicoesPorCategoria(certificadosAprovados);
 
-        List<ContribuicaoCategoria> contribuicoes = horasEnviadasPorCategoria.entrySet().stream()
-                .map(entrada -> contribuicaoDe(categoriaPorNome.get(entrada.getKey()), entrada.getValue()))
-                .toList();
-
-        int contabilizadoPorCategoria = contribuicoes.stream()
-                .mapToInt(ContribuicaoCategoria::horasContabilizadas)
-                .sum();
-        int enviadoTotal = contribuicoes.stream()
-                .mapToInt(ContribuicaoCategoria::horasEnviadas)
-                .sum();
+        int contabilizadoPorCategoria = somar(contribuicoes, ContribuicaoCategoria::horasContabilizadas);
+        int enviadoTotal = somar(contribuicoes, ContribuicaoCategoria::horasEnviadas);
 
         int totalContabilizado = Math.min(contabilizadoPorCategoria, TOTAL_MAXIMO);
         int totalExcedente = enviadoTotal - totalContabilizado;
@@ -38,9 +24,22 @@ public class CalculadoraDeHoras {
         return new ResumoHoras(totalContabilizado, totalExcedente, contribuicoes);
     }
 
-    private ContribuicaoCategoria contribuicaoDe(Categoria categoria, int horasEnviadas) {
-        int contabilizadas = Math.min(horasEnviadas, categoria.getTetoHoras());
-        return new ContribuicaoCategoria(
-                categoria.getNome(), horasEnviadas, contabilizadas, horasEnviadas - contabilizadas);
+    private List<ContribuicaoCategoria> contribuicoesPorCategoria(List<Certificado> certificados) {
+        Map<String, Categoria> categoriaPorNome = new LinkedHashMap<>();
+        Map<String, Integer> horasEnviadasPorCategoria = new LinkedHashMap<>();
+        for (Certificado certificado : certificados) {
+            Categoria categoria = certificado.getCategoria();
+            categoriaPorNome.putIfAbsent(categoria.getNome(), categoria);
+            horasEnviadasPorCategoria.merge(categoria.getNome(), certificado.getCargaHoraria(), Integer::sum);
+        }
+        return horasEnviadasPorCategoria.entrySet().stream()
+                .map(entrada -> ContribuicaoCategoria.aplicarTeto(
+                        categoriaPorNome.get(entrada.getKey()), entrada.getValue()))
+                .toList();
+    }
+
+    private int somar(List<ContribuicaoCategoria> contribuicoes,
+                      java.util.function.ToIntFunction<ContribuicaoCategoria> campo) {
+        return contribuicoes.stream().mapToInt(campo).sum();
     }
 }

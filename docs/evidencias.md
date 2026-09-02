@@ -157,3 +157,14 @@ carrega apenas os `APROVADO` do aluno e delega ao domínio.
 ```
 
 > GREEN confirmado: 91 testes passando (28 cenários Gherkin — US-01 + US-02 + US-03).
+
+### BLUE — refatoração `move regra de teto para ContribuicaoCategoria`
+
+A aplicação do teto virou a fábrica `ContribuicaoCategoria.aplicarTeto(categoria, horas)`;
+`CalculadoraDeHoras` ficou como orquestração (agrupamento + somatórios). Novo
+`ContribuicaoCategoriaTest`.
+
+```
+[INFO] Tests run: 93, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS   (mvn clean verify — JaCoCo 100% linha/branch em domain e service)
+```
