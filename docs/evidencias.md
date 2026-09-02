@@ -118,3 +118,26 @@ e cobertura de `HistoricoValidacao`.
 [INFO] Tests run: 74, Failures: 0, Errors: 0, Skipped: 0
 [INFO] BUILD SUCCESS   (mvn clean verify — JaCoCo 100% linha/branch em domain e service)
 ```
+
+---
+
+## US-03 — Teto por categoria (autor: Nathalia Atamanchuk Baleeiro)
+
+### RED — `mvn test`
+
+Escritos primeiro: `us03_teto_por_categoria.feature`, `TetoCategoriaSteps`,
+`CalculadoraDeHorasTest`, `HorasServiceTest`. `CalculadoraDeHoras.calcular` e
+`HorasService.resumoDoAluno` apenas como esqueleto (`UnsupportedOperationException`).
+
+```
+[INFO]  CertificadoServiceTest / ValidacaoServiceTest / ...   verdes (US-01 e US-02)
+[ERROR] CalculadoraDeHorasTest   Tests run: 7,  Failures: 0, Errors: 7
+[ERROR] HorasServiceTest         Tests run: 2,  Failures: 0, Errors: 2
+[ERROR] RunCucumberTest          Tests run: 28, Failures: 0, Errors: 8   (8 cenarios da US-03)
+[ERROR] Tests run: 84, Failures: 0, Errors: 17, Skipped: 0
+[INFO] BUILD FAILURE
+
+CalculadoraDeHorasTest.totalGeralNuncaPassaDe200 » UnsupportedOperation calcular ainda nao implementado
+```
+
+> RED confirmado: cálculo de teto por categoria e limite geral de 200h ainda não existem.
