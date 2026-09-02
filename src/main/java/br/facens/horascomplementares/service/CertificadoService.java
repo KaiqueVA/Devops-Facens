@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class CertificadoService {
@@ -54,5 +55,10 @@ public class CertificadoService {
         Certificado certificado = new Certificado(
                 aluno, categoria, dados.titulo(), dados.cargaHoraria(), dados.data());
         return certificadoRepository.save(certificado);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Certificado> listarPorAluno(Long alunoId) {
+        return certificadoRepository.findByAlunoIdOrderByDataAsc(alunoId);
     }
 }

@@ -12,4 +12,6 @@ public interface CertificadoRepository extends JpaRepository<Certificado, Long> 
     boolean existsByAlunoIdAndTituloIgnoreCaseAndData(Long alunoId, String titulo, LocalDate data);
 
     List<Certificado> findByAlunoIdAndStatus(Long alunoId, StatusCertificado status);
+
+    List<Certificado> findByAlunoIdOrderByDataAsc(Long alunoId);
 }

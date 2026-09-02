@@ -165,4 +165,13 @@ class CertificadoServiceTest {
         assertThatThrownBy(() -> service.submeter(dto("X", "ENSINO", 10, LocalDate.of(2024, 3, 10))))
                 .isInstanceOf(AlunoInexistenteException.class);
     }
+
+    @Test
+    void listarPorAlunoDelegaAoRepositorio() {
+        Certificado certificado = new Certificado(aluno, new Categoria("ENSINO", 80),
+                "Curso", 10, LocalDate.of(2024, 3, 10));
+        when(certificadoRepository.findByAlunoIdOrderByDataAsc(1L)).thenReturn(java.util.List.of(certificado));
+
+        assertThat(service.listarPorAluno(1L)).containsExactly(certificado);
+    }
 }
