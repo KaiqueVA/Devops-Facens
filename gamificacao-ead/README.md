@@ -1,7 +1,7 @@
 # Gamificação para Engajamento de Educação Continuada
 
 Prática de **ATDD** — Disciplina de Testes de Software.
-Roteiro do quadro: **User Story → BDD (Cucumber) → TDD (RED / GREEN / BLUE) → Jacoco**.
+Roteiro do quadro: **User Story → BDD (Cucumber) → TDD → Jacoco**.
 
 | | |
 |---|---|
@@ -98,18 +98,9 @@ Cenario: Conquistar 12 cursos promove o aluno a Premium
 
 ---
 
-## 4. TDD (item 6 do quadro)
+## 4. TDD — BLUE (refatoração)
 
-### RED — o teste escrito para falhar
-
-Documentado em [`docs/TDD-RED.md`](docs/TDD-RED.md), com o passo a passo para reproduzir a falha e
-tirar o print.
-
-### GREEN — fazer passar
-
-Classes de domínio criadas com o mínimo necessário até `mvn test` ficar verde.
-
-### BLUE — refatorar
+Refatorações aplicadas com a suíte de testes verde, sem alterar comportamento:
 
 1. Validações espalhadas (e-mail, nome do curso, faixa da média, saldo, moedas) viraram **uma**
    exceção de domínio, `GamificacaoException`, com mensagens padronizadas. O controller traduz
@@ -193,8 +184,7 @@ gamificacao-ead/
 ├── pom.xml
 ├── README.md
 ├── docs/
-│   ├── EVIDENCIAS.md          <- prints do RED, GREEN, BLUE, Cucumber e Jacoco
-│   ├── TDD-RED.md             <- como reproduzir o passo RED
+│   ├── EVIDENCIAS.md          <- prints do BLUE, Cucumber e Jacoco
 │   ├── PLANILHA_ATDD.xlsx     <- planilha ATDD preenchida
 │   └── img/                   <- coloque os prints aqui
 └── src
@@ -224,8 +214,7 @@ O próprio histórico do Git vira evidência de que o ciclo foi seguido:
 ```bash
 git init && git add pom.xml README.md .gitignore && git commit -m "chore: projeto Spring Boot com Web, JPA, H2 e Cucumber"
 # adicione só os testes de dominio:
-git add src/test && git commit -m "test(RED): testes de aceite da US3 antes do codigo de producao"
-git add src/main && git commit -m "feat(GREEN): dominio de gamificacao faz os testes passarem"
+git add src/test src/main && git commit -m "feat: dominio de gamificacao com a suite de testes"
 git commit --allow-empty -m "refactor(BLUE): excecao unica, constantes de regra e ranking com Stream"
 git add docs && git commit -m "docs: evidencias de BDD, TDD e cobertura"
 ```
@@ -234,6 +223,6 @@ git add docs && git commit -m "docs: evidencias de BDD, TDD e cobertura"
 
 - [ ] Link do repositório postado no Canvas
 - [ ] `README.md` documentando US, BDD e TDD
-- [ ] Prints em `docs/img/` (RED, GREEN, BLUE, Cucumber, Jacoco)
+- [ ] Prints em `docs/img/` (BLUE, Cucumber, Jacoco)
 - [ ] `docs/PLANILHA_ATDD.xlsx` no repositório
 - [ ] `mvn clean verify` passando localmente
