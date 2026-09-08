@@ -13,9 +13,9 @@ Roteiro do quadro: **User Story → BDD (Cucumber) → TDD (RED / GREEN / BLUE) 
 
 | Integrante | RA | User Story | Cenário BDD | Teste de unidade |
 |---|---|---|---|---|
-| *preencher* | | US1 | Cenário 1 | `deveLiberarTresCursosAoConcluirComMediaAcimaDeSete` |
-| *preencher* | | US2 | Cenário 4 | `devePremiarODestaqueDoForum` |
-| *preencher* | | US3 | Cenário 3 | `deveVirarPremiumAoConquistarDozeCursos` |
+| Kaique Vecchia Alves | 235446 | US1 | Cenário 1 | `deveLiberarTresCursosAoConcluirComMediaAcimaDeSete` |
+| Micael Teodoro de Almeida | 234941 | US2 | Cenário 4 | `devePremiarODestaqueDoForum` |
+| Nathalia Atamanchuk Baleeiro | 235215 | US3 | Cenário 3 | `deveVirarPremiumAoConquistarDozeCursos` |
 
 ---
 
@@ -57,9 +57,9 @@ O enunciado é ambíguo em três pontos. As escolhas do grupo foram:
 
 | # | Integrante | User Story |
 |---|---|---|
-| US1 | Integrante 1 | **COMO** aluno assinante da plataforma **QUERO** concluir um curso com bom aproveitamento **PARA** liberar novos cursos sem pagar nada a mais. |
-| US2 | Integrante 2 | **COMO** aluno participante do fórum **QUERO** ter minhas contribuições reconhecidas **PARA** ganhar um curso ao final do mês. |
-| US3 | Integrante 3 | **COMO** aluno **QUERO** evoluir para o plano Premium ao conquistar 12 cursos **PARA** receber voucher de projetos reais e moedas conversíveis em conhecimento, acúmulo ou criptomoeda. |
+| US1 | Kaique Vecchia Alves | **COMO** aluno assinante da plataforma **QUERO** concluir um curso com bom aproveitamento **PARA** liberar novos cursos sem pagar nada a mais. |
+| US2 | Micael Teodoro de Almeida | **COMO** aluno participante do fórum **QUERO** ter minhas contribuições reconhecidas **PARA** ganhar um curso ao final do mês. |
+| US3 | Nathalia Atamanchuk Baleeiro | **COMO** aluno **QUERO** evoluir para o plano Premium ao conquistar 12 cursos **PARA** receber voucher de projetos reais e moedas conversíveis em conhecimento, acúmulo ou criptomoeda. |
 
 **US escolhida pelo grupo: US3.** É a que concentra mais regras testáveis: depende do acúmulo de
 cursos conquistados (RN2), dispara três efeitos simultâneos na promoção (plano, voucher e moedas —
@@ -77,9 +77,9 @@ necessários porque o case tem cinco regras de negócio distintas.
 
 | Cenário | Integrante | RN | Por que é uma funcionalidade válida |
 |---|---|---|---|
-| 1 – Conclusão libera 3 cursos | 1 | RN2 | Fluxo principal: o aproveitamento vira benefício mensurável no saldo |
-| 2 – Média fora da faixa é recusada | 2 | RN2 (negativo) | Estado inválido do domínio, não erro de tela; prova que o aluno não é corrompido |
-| 3 – 12 cursos promovem a Premium | 3 | RN4 | Regra com **três** efeitos observáveis de uma vez |
+| 1 – Conclusão libera 3 cursos | Kaique | RN2 | Fluxo principal: o aproveitamento vira benefício mensurável no saldo |
+| 2 – Média fora da faixa é recusada | Micael | RN2 (negativo) | Estado inválido do domínio, não erro de tela; prova que o aluno não é corrompido |
+| 3 – 12 cursos promovem a Premium | Nathalia | RN4 | Regra com **três** efeitos observáveis de uma vez |
 | 4 – Destaque do fórum ganha um curso | grupo | RN3 | Prova a regra completa: mais tópicos **e** ter ajudado outros |
 | 5 – Moeda vira conhecimento | grupo | RN5 | Fecha o ciclo: o benefício volta a virar curso |
 
