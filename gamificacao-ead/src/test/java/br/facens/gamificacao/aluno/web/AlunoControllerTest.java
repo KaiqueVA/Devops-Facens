@@ -10,6 +10,11 @@ import static org.mockito.Mockito.when;
 import br.facens.gamificacao.aluno.domain.Aluno;
 import br.facens.gamificacao.aluno.domain.DestinoMoeda;
 import br.facens.gamificacao.aluno.domain.GamificacaoException;
+import br.facens.gamificacao.aluno.dto.AlunoResponse;
+import br.facens.gamificacao.aluno.dto.ConcluirCursoRequest;
+import br.facens.gamificacao.aluno.dto.ConverterMoedasRequest;
+import br.facens.gamificacao.aluno.dto.ForumRequest;
+import br.facens.gamificacao.aluno.dto.MatricularRequest;
 import br.facens.gamificacao.aluno.service.GamificacaoService;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,11 +42,14 @@ class AlunoControllerTest {
     }
 
     @Test
-    @DisplayName("CT-API-01 - POST /alunos retorna 201")
+    @DisplayName("CT-API-01 - POST /alunos retorna 201 com o AlunoResponse")
     void matricularRetorna201() {
         when(service.matricular(anyString())).thenReturn(aluno);
 
-        assertEquals(HttpStatus.CREATED, controller.matricular("maria@teste.com").getStatusCode());
+        ResponseEntity<AlunoResponse> resposta = controller.matricular(new MatricularRequest("maria@teste.com"));
+
+        assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
+        assertEquals("maria@teste.com", resposta.getBody().email());
     }
 
     @Test
@@ -49,9 +57,10 @@ class AlunoControllerTest {
     void concluirCursoRetorna200() {
         when(service.concluirCurso(anyLong(), anyString(), any(BigDecimal.class))).thenReturn(aluno);
 
-        assertEquals(HttpStatus.OK, controller
-                .concluirCurso(1L, "Java Basico", new BigDecimal("8.5"))
-                .getStatusCode());
+        ResponseEntity<AlunoResponse> resposta = controller
+                .concluirCurso(1L, new ConcluirCursoRequest("Java Basico", new BigDecimal("8.5")));
+
+        assertEquals(HttpStatus.OK, resposta.getStatusCode());
     }
 
     @Test
@@ -62,9 +71,10 @@ class AlunoControllerTest {
         when(service.premiarDestaqueDoForum()).thenReturn(aluno);
         when(service.buscar(1L)).thenReturn(aluno);
 
-        assertEquals(HttpStatus.OK, controller.participarDoForum(1L, 3, 4).getStatusCode());
-        assertEquals(HttpStatus.OK,
-                controller.converterMoedas(1L, 1, DestinoMoeda.CONHECIMENTO).getStatusCode());
+        assertEquals(HttpStatus.OK, controller.participarDoForum(1L, new ForumRequest(3, 4)).getStatusCode());
+        assertEquals(HttpStatus.OK, controller
+                .converterMoedas(1L, new ConverterMoedasRequest(1, DestinoMoeda.CONHECIMENTO))
+                .getStatusCode());
         assertEquals(HttpStatus.OK, controller.premiarDestaqueDoForum().getStatusCode());
         assertEquals(HttpStatus.OK, controller.buscar(1L).getStatusCode());
     }
