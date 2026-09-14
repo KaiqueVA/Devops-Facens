@@ -70,15 +70,20 @@ public class GamificacaoSteps {
         service.participarDoForum(outro.getId(), topicos, comentarios);
     }
 
-    @Quando("o aluno conclui o curso {string} com media {double}")
-    public void oAlunoConcluiOCurso(String curso, double media) {
-        aluno = service.concluirCurso(aluno.getId(), curso, BigDecimal.valueOf(media));
+    // Regex em vez de {double}: o {double} embutido do Cucumber monta o parser de
+    // numero a partir do idioma declarado em "# language: pt" no .feature, e nesse
+    // locale "." e separador de milhar (nao decimal) -- "8.5" virava 85 e estourava
+    // a validacao de media. Capturando como texto e convertendo com "new BigDecimal(String)"
+    // o parse fica sempre com "." como decimal, independente de locale.
+    @Quando("^o aluno conclui o curso \"([^\"]*)\" com media (.+)$")
+    public void oAlunoConcluiOCurso(String curso, String media) {
+        aluno = service.concluirCurso(aluno.getId(), curso, new BigDecimal(media));
     }
 
-    @Quando("o aluno tenta concluir o curso {string} com media {double}")
-    public void oAlunoTentaConcluirOCurso(String curso, double media) {
+    @Quando("^o aluno tenta concluir o curso \"([^\"]*)\" com media (.+)$")
+    public void oAlunoTentaConcluirOCurso(String curso, String media) {
         try {
-            aluno = service.concluirCurso(aluno.getId(), curso, BigDecimal.valueOf(media));
+            aluno = service.concluirCurso(aluno.getId(), curso, new BigDecimal(media));
         } catch (GamificacaoException e) {
             erro = e;
         }
