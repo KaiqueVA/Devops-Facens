@@ -159,6 +159,13 @@ curl "http://localhost:8080/alunos/1"
 
 Console do H2 (perfil padrão): `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:gamificacao`, usuário `sa`).
 
+### Front-end (Vue 3)
+
+Uma página única em Vue 3 (via CDN, sem build/Node) servida pelo próprio Spring Boot como recurso
+estático (`src/main/resources/static/index.html`) — abre sozinha em `http://localhost:8080/`.
+Cobre os 6 endpoints da API (matricular, buscar, concluir curso, fórum, premiação, moedas) com
+formulários simples e mostra a última resposta da API.
+
 ### Swagger / OpenAPI
 
 Com a aplicação no ar: `http://localhost:8080/swagger-ui.html` — lista e permite testar todos os
@@ -273,4 +280,4 @@ git add docs && git commit -m "docs: evidencias de BDD, TDD e cobertura"
 - [x] Suporte a PostgreSQL (profile `postgres`) + PGAdmin via Docker Compose
 - [x] `Dockerfile` + `docker-compose.yml`
 - [ ] Evidência do PostgreSQL e do H2 rodando (`docs/img/`)
-- [ ] Front-end em VueJS
+- [x] Front-end em VueJS (`src/main/resources/static/index.html`, página única)
