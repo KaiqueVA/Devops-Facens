@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gamificação EAD</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f9;
+    --card: #ffffff;
+    --text: #1c1c1f;
+    --muted: #6b6b76;
+    --border: #e2e2e7;
+    --accent: #4f46e5;
+    --accent-text: #ffffff;
+    --ok: #0a7a3c;
+    --err: #b3261e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16161a;
+      --card: #201f26;
+      --text: #efeff2;
+      --muted: #9a99a6;
+      --border: #333238;
+      --ok: #4ade80;
+      --err: #f87171;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 16px 64px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 2px; }
+  .sub { color: var(--muted); margin-top: 0; margin-bottom: 24px; font-size: 0.9rem; }
+  .aluno-atual {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; display: flex;
+    align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .aluno-atual input {
+    width: 80px; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border);
+    background: transparent; color: var(--text);
+  }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .card h2 { font-size: 1rem; margin: 0 0 4px; }
+  .card p.hint { color: var(--muted); font-size: 0.8rem; margin: 0 0 12px; }
+  .card label { display: block; font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
+  .card input, .card select {
+    width: 100%; padding: 7px 9px; margin-top: 4px; border-radius: 7px;
+    border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 0.9rem;
+  }
+  button {
+    margin-top: 12px; width: 100%; padding: 9px; border: none; border-radius: 7px;
+    background: var(--accent); color: var(--accent-text); font-size: 0.9rem; cursor: pointer;
+  }
+  button:hover { opacity: 0.9; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .log {
+    margin-top: 24px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .log h2 { font-size: 1rem; margin: 0 0 8px; }
+  .log pre {
+    margin: 0; white-space: pre-wrap; word-break: break-word; font-size: 0.8rem;
+    max-height: 260px; overflow: auto;
+  }
+  .status { font-weight: 600; }
+  .status.ok { color: var(--ok); }
+  .status.err { color: var(--err); }
+</style>
+</head>
+<body>
+<div id="app" class="wrap">
+  <h1>🎓 Gamificação para Educação Continuada</h1>
+  <p class="sub">Front-end mínimo (Vue 3) consumindo a API Spring Boot. Docs completas em
+    <a href="/swagger-ui.html">/swagger-ui.html</a>.</p>
+
+  <div class="aluno-atual">
+    <strong>Aluno atual (id):</strong>
+    <input type="number" v-model.number="alunoId" placeholder="1" />
+    <span v-if="alunoAtual">— {{ alunoAtual.email }} · {{ alunoAtual.plano }} · {{ alunoAtual.cursosDisponiveis }} cursos disponíveis</span>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <h2>Matricular aluno</h2>
+      <p class="hint">Cria um aluno novo no plano BASICO.</p>
+      <label>E-mail</label>
+      <input v-model="matricular.email" placeholder="maria@teste.com" />
+      <button @click="chamar(matricularAluno)">Matricular</button>
+    </div>
+
+    <div class="card">
+      <h2>Buscar aluno</h2>
+      <p class="hint">Usa o id do campo "Aluno atual" acima.</p>
+      <button @click="chamar(buscarAluno)">Buscar</button>
+    </div>
+
+    <div class="card">
+      <h2>Concluir curso</h2>
+      <p class="hint">RN2: média acima de 7,0 libera 3 cursos extras.</p>
+      <label>Curso</label>
+      <input v-model="curso.nome" placeholder="Java Básico" />
+      <label>Média (0,0 a 10,0)</label>
+      <input type="number" step="0.1" v-model.number="curso.media" placeholder="8.5" />
+      <button @click="chamar(concluirCurso)">Concluir curso</button>
+    </div>
+
+    <div class="card">
+      <h2>Participar do fórum</h2>
+      <p class="hint">RN3: registra tópicos e comentários do mês.</p>
+      <label>Tópicos</label>
+      <input type="number" v-model.number="forum.topicos" placeholder="10" />
+      <label>Comentários</label>
+      <input type="number" v-model.number="forum.comentarios" placeholder="9" />
+      <button @click="chamar(participarForum)">Registrar participação</button>
+    </div>
+
+    <div class="card">
+      <h2>Premiar destaque do fórum</h2>
+      <p class="hint">Fecha o mês: quem mais participou (e ajudou outros) ganha 1 curso.</p>
+      <button @click="chamar(premiarForum)">Premiar destaque</button>
+    </div>
+
+    <div class="card">
+      <h2>Converter moedas</h2>
+      <p class="hint">RN5: só aluno Premium possui moedas.</p>
+      <label>Quantidade</label>
+      <input type="number" v-model.number="moedas.quantidade" placeholder="3" />
+      <label>Destino</label>
+      <select v-model="moedas.destino">
+        <option value="CONHECIMENTO">CONHECIMENTO (vira cursos)</option>
+        <option value="ACUMULO">ACUMULO (mantém saldo)</option>
+        <option value="CRIPTOMOEDA">CRIPTOMOEDA</option>
+      </select>
+      <button @click="chamar(converterMoedas)">Converter</button>
+    </div>
+
+  </div>
+
+  <div class="log">
+    <h2>Última resposta</h2>
+    <p v-if="status" :class="['status', statusOk ? 'ok' : 'err']">{{ status }}</p>
+    <pre v-if="resultado">{{ resultado }}</pre>
+    <p v-else class="hint">Nenhuma chamada feita ainda.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      alunoId: null,
+      alunoAtual: null,
+      matricular: { email: "" },
+      curso: { nome: "", media: null },
+      forum: { topicos: null, comentarios: null },
+      moedas: { quantidade: null, destino: "CONHECIMENTO" },
+      status: "",
+      statusOk: true,
+      resultado: "",
+    };
+  },
+  methods: {
+    async chamar(fn) {
+      try {
+        await fn();
+      } catch (e) {
+        this.statusOk = false;
+        this.status = "Erro: " + e.message;
+      }
+    },
+    async requisitar(url, options) {
+      const resp = await fetch(url, options);
+      const texto = await resp.text();
+      let corpo;
+      try { corpo = JSON.parse(texto); } catch { corpo = texto; }
+
+      this.statusOk = resp.ok;
+      this.status = `${options?.method || "GET"} ${url} → HTTP ${resp.status}`;
+      this.resultado = typeof corpo === "string" ? corpo : JSON.stringify(corpo, null, 2);
+
+      if (!resp.ok) throw new Error(typeof corpo === "string" ? corpo : resp.statusText);
+      return corpo;
+    },
+    postJson(url, body) {
+      return this.requisitar(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    },
+    async matricularAluno() {
+      const aluno = await this.postJson("/alunos", { email: this.matricular.email });
+      this.alunoId = aluno.id;
+      this.alunoAtual = aluno;
+    },
+    async buscarAluno() {
+      this.alunoAtual = await this.requisitar(`/alunos/${this.alunoId}`);
+    },
+    async concluirCurso() {
+      this.alunoAtual = await this.postJson(`/alunos/${this.alunoId}/conclusoes`, {
+        curso: this.curso.nome,
+        media: this.curso.media,
+      });
+    },
+    async participarForum() {
+      this.alunoAtual = await this.postJson(`/alunos/${this.alunoId}/forum`, {
+        topicos: this.forum.topicos,
+        comentarios: this.forum.comentarios,
+      });
+    },
+    async premiarForum() {
+      this.alunoAtual = await this.postJson("/alunos/forum/premiacao", {});
+    },
+    async converterMoedas() {
+      this.alunoAtual = await this.postJson(`/alunos/${this.alunoId}/moedas`, {
+        quantidade: this.moedas.quantidade,
+        destino: this.moedas.destino,
+      });
+    },
+  },
+}).mount("#app");
+</script>
+</body>
+</html>

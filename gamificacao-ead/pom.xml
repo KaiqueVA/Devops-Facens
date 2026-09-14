@@ -21,6 +21,7 @@
         <java.version>17</java.version>
         <cucumber.version>7.18.1</cucumber.version>
         <jacoco.version>0.8.12</jacoco.version>
+        <springdoc.version>2.6.0</springdoc.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,20 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Banco PostgreSQL (usado via profile "postgres", ex.: Docker Compose) -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Swagger / OpenAPI: gera automaticamente /swagger-ui.html e /v3/api-docs -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
 
         <dependency>
@@ -85,6 +100,8 @@
                 <configuration>
                     <excludes>
                         <exclude>br/facens/gamificacao/GamificacaoApplication.class</exclude>
+                        <!-- DTOs sao records sem regra de negocio: so guardam e transportam dados -->
+                        <exclude>br/facens/gamificacao/aluno/dto/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
