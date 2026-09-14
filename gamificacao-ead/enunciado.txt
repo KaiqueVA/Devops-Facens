@@ -1,0 +1,45 @@
+Atividade em Grupo, porém avaliação: (30% em grupo, 40% individual)
+
+Entregar em GitHUB o projeto final em Spring Boot e as evidências do BDD e TDD, ou seja, ATDD foi implementado. Postar o link do Git aqui no CANVAS. Se usou a planilha deixar também. Recomendo usar o Read-me para documentação.
+
+Esta atividade será realizada em:
+
+01/09 (já iniciamos)
+
+08/09 (se possível, trazer computador na aula)
+
+14/09 (data de entrega turmas 1 e 2) 
+
+Read-me da aplicação via GITHUB:
+
+Descrição do estudo de caso: passei em aula, case Educação Continuada Gamificada.
+
+US: 1 por integrante com identificação do integrante que redigiu.
+
+Qual US foi a escolha.
+
+Quais foram os BDD escritos por cada integrante, identificar o integrante.
+
+Usar IntelliJ, versão Ultimate e Spring Boot para implementação TDD (obrigatório) e Cucumber (opcional).
+
+Dependencias do Spring Boot: Spring WEB, Spring Data e JPA, Banco H2, Banco PostGres, PGADMIN para adminstrar o banco via container.
+
+Criar um pacote "Domain"  e criar a classe correspondente de domínio (pasta src/java) 
+
+Criar um porte DomainTest e criar a classeTest correspondente, igual fizemos no exercício de calculadora.
+
+Implementar o RED do TDD e deixar evidência dos testes fallhando.
+
+Implementar o GREEN do TDD e deixar a evidência dos testes passando e cobertura dos testes (se der amarelo e vermelho deixar aqui)
+
+Implementar o BLUE do TDD e deixar todos os testes passando e a cobertura de 100% SEM vermelho ou amarelo.
+
+Criar as demais camadas (Service, Repository (JPA), Entity, DTO e Controller)
+
+Expor o endpoint com Swagger.
+
+Fazer o Front.End em VueJS
+
+Evidencias do banco PostGres e H2 rodando.
+
+Rodar a aplicação via Docker. (Dockerfile, Docker-Compose), PostGRES
