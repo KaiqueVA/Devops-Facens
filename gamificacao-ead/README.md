@@ -6,8 +6,10 @@ Roteiro do quadro: **User Story → BDD (Cucumber) → TDD → Jacoco**.
 | | |
 |---|---|
 | **Stack** | Java 17 · Spring Boot 3.3.4 · Maven |
-| **Dependências pedidas** | Spring Web · Spring Data JPA · H2 (em memória) · Cucumber |
+| **Dependências pedidas** | Spring Web · Spring Data JPA · H2 (em memória) · PostgreSQL · Cucumber |
 | **Testes** | JUnit 5 · Mockito · Cucumber 7 · Jacoco (100%) |
+| **Docs da API** | Swagger UI em `/swagger-ui.html` |
+| **Infra** | Docker + Docker Compose (app · PostgreSQL · PGAdmin) |
 
 ## Equipe
 
@@ -135,16 +137,52 @@ Relatórios gerados:
 
 ### Endpoints
 
+Os endpoints recebem DTOs em JSON (`@RequestBody`), não mais query params.
+
 ```bash
-curl -X POST "http://localhost:8080/alunos?email=maria@teste.com"
-curl -X POST "http://localhost:8080/alunos/1/conclusoes?curso=Java%20Basico&media=8.5"
-curl -X POST "http://localhost:8080/alunos/1/forum?topicos=10&comentarios=9"
+curl -X POST "http://localhost:8080/alunos" \
+  -H "Content-Type: application/json" -d '{"email":"maria@teste.com"}'
+
+curl -X POST "http://localhost:8080/alunos/1/conclusoes" \
+  -H "Content-Type: application/json" -d '{"curso":"Java Basico","media":8.5}'
+
+curl -X POST "http://localhost:8080/alunos/1/forum" \
+  -H "Content-Type: application/json" -d '{"topicos":10,"comentarios":9}'
+
 curl -X POST "http://localhost:8080/alunos/forum/premiacao"
-curl -X POST "http://localhost:8080/alunos/1/moedas?quantidade=3&destino=CONHECIMENTO"
+
+curl -X POST "http://localhost:8080/alunos/1/moedas" \
+  -H "Content-Type: application/json" -d '{"quantidade":3,"destino":"CONHECIMENTO"}'
+
 curl "http://localhost:8080/alunos/1"
 ```
 
-Console do H2: `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:gamificacao`, usuário `sa`).
+Console do H2 (perfil padrão): `http://localhost:8080/h2-console` (JDBC URL `jdbc:h2:mem:gamificacao`, usuário `sa`).
+
+### Swagger / OpenAPI
+
+Com a aplicação no ar: `http://localhost:8080/swagger-ui.html` — lista e permite testar todos os
+endpoints direto no navegador. JSON cru da spec em `http://localhost:8080/v3/api-docs`.
+
+### Docker (app + PostgreSQL + PGAdmin)
+
+```bash
+docker compose up --build
+```
+
+Sobe 3 containers:
+
+| Serviço | Porta | Observação |
+|---|---|---|
+| `app` | `8080` | API rodando com o profile `postgres` (`Dockerfile` faz build multi-stage com Maven) |
+| `postgres` | `5432` | Banco `gamificacao`, usuário/senha `gamificacao` |
+| `pgadmin` | `5050` | Login `admin@facens.br` / `admin`. Pra registrar o servidor: host `postgres`, porta `5432` (nome do serviço na rede do Compose, não `localhost`) |
+
+Pra rodar só a API local contra um Postgres (sem empacotar em container):
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+```
 
 ---
 
@@ -183,6 +221,8 @@ de 100%. Como o 100% foi alcançado:
 gamificacao-ead/
 ├── pom.xml
 ├── README.md
+├── Dockerfile
+├── docker-compose.yml         <- app + PostgreSQL + PGAdmin
 ├── docs/
 │   ├── EVIDENCIAS.md          <- prints do BLUE, Cucumber e Jacoco
 │   ├── PLANILHA_ATDD.xlsx     <- planilha ATDD preenchida
@@ -194,8 +234,10 @@ gamificacao-ead/
     │       ├── domain/      Aluno · PlanoAssinatura · DestinoMoeda · GamificacaoException
     │       ├── repository/  AlunoRepository
     │       ├── service/     GamificacaoService
+    │       ├── dto/         MatricularRequest · ConcluirCursoRequest · ForumRequest · ConverterMoedasRequest · AlunoResponse
     │       └── web/         AlunoController
-    ├── main/resources/application.properties
+    ├── main/resources/application.properties       (perfil padrao: H2)
+    ├── main/resources/application-postgres.properties  (perfil "postgres": usado pelo Docker)
     └── test
         ├── java/br/facens/gamificacao/
         │   ├── cucumber/  RunCucumberTest · CucumberSpringConfiguration · GamificacaoSteps
@@ -223,6 +265,12 @@ git add docs && git commit -m "docs: evidencias de BDD, TDD e cobertura"
 
 - [ ] Link do repositório postado no Canvas
 - [ ] `README.md` documentando US, BDD e TDD
-- [ ] Prints em `docs/img/` (BLUE, Cucumber, Jacoco)
+- [ ] Prints em `docs/img/` (RED, GREEN, BLUE, Cucumber, Jacoco, API)
 - [ ] `docs/PLANILHA_ATDD.xlsx` no repositório
 - [ ] `mvn clean verify` passando localmente
+- [x] Camadas Service, Repository, Entity, DTO e Controller
+- [x] Swagger em `/swagger-ui.html`
+- [x] Suporte a PostgreSQL (profile `postgres`) + PGAdmin via Docker Compose
+- [x] `Dockerfile` + `docker-compose.yml`
+- [ ] Evidência do PostgreSQL e do H2 rodando (`docs/img/`)
+- [ ] Front-end em VueJS

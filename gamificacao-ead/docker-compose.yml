@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: gamificacao-postgres
+    environment:
+      POSTGRES_DB: gamificacao
+      POSTGRES_USER: gamificacao
+      POSTGRES_PASSWORD: gamificacao
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gamificacao -d gamificacao"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: gamificacao-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@facens.br
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  app:
+    build: .
+    container_name: gamificacao-app
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gamificacao
+      SPRING_DATASOURCE_USERNAME: gamificacao
+      SPRING_DATASOURCE_PASSWORD: gamificacao
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
