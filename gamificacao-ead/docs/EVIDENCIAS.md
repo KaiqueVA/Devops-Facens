@@ -11,6 +11,8 @@ links abaixo funcionem no GitHub.
 | 4 | BDD - Cucumber | `docs/img/04-cucumber.png` | Abrir `target/cucumber-report.html`, printar os 5 cenarios verdes |
 | 5 | Cobertura Jacoco | `docs/img/05-jacoco.png` | Abrir `target/site/jacoco/index.html`, printar 100% |
 | 6 | API no ar | `docs/img/06-api.png` | `mvn spring-boot:run` + as chamadas curl do README |
+| 7 | PostgreSQL rodando | `docs/img/09-postgres.png` | `docker compose up --build`, conectar no PGAdmin e consultar a tabela `aluno` |
+| 8 | H2 rodando | `docs/img/10-h2.png` | `mvn spring-boot:run` (profile padrao), abrir `/h2-console` e consultar a tabela `ALUNO` |
 
 ## 1 - RED
 
@@ -35,3 +37,11 @@ links abaixo funcionem no GitHub.
 ## 6 - API
 
 ![API](img/06-api.png)
+
+## 7 - PostgreSQL
+
+![PostgreSQL](img/09-postgres.png)
+
+## 8 - H2
+
+![H2](img/10-h2.png)
