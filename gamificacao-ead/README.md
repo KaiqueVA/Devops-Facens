@@ -270,14 +270,14 @@ git add docs && git commit -m "docs: evidencias de BDD, TDD e cobertura"
 
 ## 9. Checklist de entrega
 
-- [ ] Link do repositório postado no Canvas
-- [ ] `README.md` documentando US, BDD e TDD
-- [ ] Prints em `docs/img/` (RED, GREEN, BLUE, Cucumber, Jacoco, API)
-- [ ] `docs/PLANILHA_ATDD.xlsx` no repositório
-- [ ] `mvn clean verify` passando localmente
+- [x] Link do repositório postado no Canvas
+- [x] `README.md` documentando US, BDD e TDD
+- [x] Prints em `docs/img/` (RED, GREEN, BLUE, Cucumber, Jacoco, API)
+- [x] `docs/PLANILHA_ATDD.xlsx` no repositório
+- [x] `mvn clean verify` passando localmente
 - [x] Camadas Service, Repository, Entity, DTO e Controller
 - [x] Swagger em `/swagger-ui.html`
 - [x] Suporte a PostgreSQL (profile `postgres`) + PGAdmin via Docker Compose
 - [x] `Dockerfile` + `docker-compose.yml`
-- [ ] Evidência do PostgreSQL e do H2 rodando (`docs/img/`)
+- [x] Evidência do PostgreSQL e do H2 rodando (`docs/img/`)
 - [x] Front-end em VueJS (`src/main/resources/static/index.html`, página única)
