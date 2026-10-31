@@ -1,0 +1,15 @@
+# Violacao proposital: @Entity (jakarta.persistence) colocado de volta no dominio Aluno
+# Comando: teste ArquiteturaModularTest (o mesmo que roda no mvn verify / Jenkins)
+
+OK   | ArquiteturaModularTest | ARQ-01 - modulos so dependem do contrato publico (api) de modulos declarados
+OK   | ArquiteturaModularTest | ARQ-03 - o verificador detecta uma violacao (prova de que a regra funciona)
+OK   | ArquiteturaModularTest | ARQ-05 - casos de uso dependem de portas, nunca de adapters ou de JPA (ADR-002)
+OK   | ArquiteturaModularTest | ARQ-02 - todo pacote de primeiro nivel e um modulo declarado
+FAIL | ArquiteturaModularTest | ARQ-04 - dominio da gamificacao nao conhece framework, banco nem adapters (ADR-002)
+
+    MethodSource [className = 'br.facens.gamificacao.arquitetura.ArquiteturaModularTest', methodName = 'dominioPuro', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: Dominio acoplado:
+br.facens.gamificacao.gamificacao.domain.Aluno -> jakarta.persistence.Entity ==> expected: <true> but was: <false>
+       org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+       org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+       org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
