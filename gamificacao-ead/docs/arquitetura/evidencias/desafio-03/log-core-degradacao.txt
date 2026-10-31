@@ -1,0 +1,4 @@
+b.f.g.r.application.RecomendacaoService  : IA indisponivel, usando catalogo padrao para o aluno 1: Falha ao chamar /recomendacoes: SocketTimeoutException - Read timed out
+b.f.g.r.application.RecomendacaoService  : Assistente indisponivel: Falha ao chamar /assistente/perguntas: SocketTimeoutException - Read timed out
+b.f.g.r.application.RecomendacaoService  : IA indisponivel, usando catalogo padrao para o aluno 1: Falha ao chamar /recomendacoes: ConnectException - Connection refused
+b.f.g.r.application.RecomendacaoService  : Assistente indisponivel: Falha ao chamar /assistente/perguntas: ConnectException - Connection refused

@@ -9,3 +9,12 @@ target/
 .DS_Store
 enunciado.txt
 CONTEXTO-SESSAO-IA.md
+
+# Python (servicos/)
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+.venv/
+relatorio-pytest.xml

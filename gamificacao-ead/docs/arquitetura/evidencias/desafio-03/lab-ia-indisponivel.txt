@@ -1,0 +1,41 @@
+
+=== 0. Preparacao: aluno com 2 cursos conquistados ===
+aluno id=1
+{"status":"UP","modelo":"v1-regras-ponderadas","trechos_rag":11}
+
+=== 1. IA no ar ===
+$ GET /alunos/1/recomendacoes  ->  HTTP 200  em 0.058005s
+{"alunoId":1,"origem":"IA","modelo":"v1-regras-ponderadas","degradado":false,"cursos":[{"curso":"ARQ-301","titulo":"Arquitetura de Software","score":1.0,"motivo":"nivel 3 alinhado ao seu progresso"},{"curso":"CICD-301","titulo":"CI/CD com Jenkins","score":1.0,
+
+$ POST /assistente/perguntas  ->  HTTP 200  em 0.011391s
+{"resposta":"Ao conquistar 12 cursos (concluídos com média acima de 7,0), o plano passa a ser Premium. O aluno recebe um voucher para participar de projetos reais e 3 moedas.","fontes":["regras-de-gamificacao.md#Plano Premium","regras-de-gamificacao.md#Moeda
+
+
+=== 2. IA lenta (3,5 s): timeouts de 800 ms (recomendacao) e 3 s (assistente) protegem o Core ===
+$ GET /alunos/1/recomendacoes  ->  HTTP 200  em 0.810625s
+{"alunoId":1,"origem":"CATALOGO_PADRAO","modelo":"catalogo-padrao","degradado":true,"cursos":[{"curso":"JAVA-101","titulo":"Java Basico","score":0.0,"motivo":"sugestao padrao (IA indisponivel)"},{"curso":"GIT-101","titulo":"Git e GitHub","score":0.0,"motivo":"
+
+$ POST /assistente/perguntas  ->  HTTP 503  em 3.013589s
+{"erro":"Assistente educacional indisponivel no momento. Tente novamente em instantes."}
+
+
+=== 3. IA PARADA (kill $(cat ia.pid)) ===
+ia-service fora do ar (conexao recusada)
+$ GET /alunos/1/recomendacoes  ->  HTTP 200  em 0.006764s
+{"alunoId":1,"origem":"CATALOGO_PADRAO","modelo":"catalogo-padrao","degradado":true,"cursos":[{"curso":"JAVA-101","titulo":"Java Basico","score":0.0,"motivo":"sugestao padrao (IA indisponivel)"},{"curso":"GIT-101","titulo":"Git e GitHub","score":0.0,"motivo":"
+
+$ POST /assistente/perguntas  ->  HTTP 503  em 0.005503s
+{"erro":"Assistente educacional indisponivel no momento. Tente novamente em instantes."}
+
+--- fluxo essencial (nao depende da IA):
+$ POST /alunos/1/conclusoes  ->  HTTP 200  em 0.008944s
+{"id":1,"email":"lab3@facens.br","plano":"BASICO","cursosDisponiveis":11,"cursosConcluidos":3,"cursosConquistados":3,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ GET /ranking?tamanho=3  ->  HTTP 200  em 0.005381s
+[{"posicao":1,"alunoId":1,"email":"lab3@facens.br","plano":"BASICO","cursosConquistados":3,"moedas":0}]
+
+
+=== 4. IA volta (ia-start.sh): o Core se recupera sozinho, sem restart ===
+$ GET /alunos/1/recomendacoes  ->  HTTP 200  em 0.012909s
+{"alunoId":1,"origem":"IA","modelo":"v1-regras-ponderadas","degradado":false,"cursos":[{"curso":"ARQ-301","titulo":"Arquitetura de Software","score":1.0,"motivo":"nivel 3 alinhado ao seu progresso"},{"curso":"CICD-301","titulo":"CI/CD com Jenkins","score":1.0,
+
