@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import br.facens.gamificacao.aluno.domain.Aluno;
-import br.facens.gamificacao.aluno.domain.DestinoMoeda;
-import br.facens.gamificacao.aluno.domain.GamificacaoException;
-import br.facens.gamificacao.aluno.domain.PlanoAssinatura;
-import br.facens.gamificacao.aluno.repository.AlunoRepository;
-import br.facens.gamificacao.aluno.service.GamificacaoService;
+import br.facens.gamificacao.gamificacao.domain.Aluno;
+import br.facens.gamificacao.gamificacao.domain.DestinoMoeda;
+import br.facens.gamificacao.gamificacao.domain.GamificacaoException;
+import br.facens.gamificacao.gamificacao.domain.PlanoAssinatura;
+import br.facens.gamificacao.gamificacao.adapter.persistence.AlunoRepositorioJpa;
+import br.facens.gamificacao.gamificacao.application.GamificacaoService;
 import io.cucumber.java.Before;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Entao;
@@ -23,14 +23,14 @@ public class GamificacaoSteps {
     private GamificacaoService service;
 
     @Autowired
-    private AlunoRepository repository;
+    private AlunoRepositorioJpa repository;
 
     private Aluno aluno;
     private GamificacaoException erro;
 
     @Before
     public void limparBase() {
-        repository.deleteAll();
+        repository.removerTodos();
         aluno = null;
         erro = null;
     }
