@@ -1,0 +1,47 @@
+
+=== 1. Interacao SINCRONA: conclusao responde na hora com a recompensa ja calculada ===
+$ POST /alunos/1/conclusoes {"curso":"Java","media":9} ->  HTTP 200 em 0.058734s
+{"id":1,"email":"lab410010@facens.br","plano":"BASICO","cursosDisponiveis":7,"cursosConcluidos":1,"cursosConquistados":1,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+
+=== 2. Interacao ASSINCRONA: notificacao e analytics chegam pelo outbox (relay a cada 2 s) ===
+  por assinante/status: {"analytics.aprendizagem": {"ENTREGUE": 1}, "notificacao.conclusao": {"ENTREGUE": 1}}
+  #2   notificacao.conclusao    ENTREGUE          tentativas=1 
+  #1   analytics.aprendizagem   ENTREGUE          tentativas=1 
+  provedor recebeu: ['Curso conquistado: Java']
+
+=== 3. Consumidor INDISPONIVEL (kill $(cat stub.pid)) ===
+$ POST /alunos/1/conclusoes {"curso":"Spring","media":8.5} ->  HTTP 200 em 0.011976s
+{"id":1,"email":"lab410010@facens.br","plano":"BASICO","cursosDisponiveis":9,"cursosConcluidos":2,"cursosConquistados":2,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ POST /alunos/1/conclusoes {"curso":"Docker","media":8.5} ->  HTTP 200 em 0.007411s
+{"id":1,"email":"lab410010@facens.br","plano":"BASICO","cursosDisponiveis":11,"cursosConcluidos":3,"cursosConquistados":3,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ POST /alunos/1/conclusoes {"curso":"Git","media":8.5} ->  HTTP 200 em 0.008625s
+{"id":1,"email":"lab410010@facens.br","plano":"BASICO","cursosDisponiveis":13,"cursosConcluidos":4,"cursosConquistados":4,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+  por assinante/status: {"analytics.aprendizagem": {"ENTREGUE": 4}, "notificacao.conclusao": {"ENTREGUE": 1, "PENDENTE": 3}}
+  #8   notificacao.conclusao    PENDENTE          tentativas=3 ResourceAccessException: I/O error on POST request for "http://localho
+  #7   analytics.aprendizagem   ENTREGUE          tentativas=1 
+  #6   notificacao.conclusao    PENDENTE          tentativas=3 ResourceAccessException: I/O error on POST request for "http://localho
+  #5   analytics.aprendizagem   ENTREGUE          tentativas=1 
+  #4   notificacao.conclusao    PENDENTE          tentativas=3 ResourceAccessException: I/O error on POST request for "http://localho
+  #3   analytics.aprendizagem   ENTREGUE          tentativas=1 
+--- analytics (outro assinante do mesmo evento) segue em dia:
+$ GET /analytics/resumo  ->  HTTP 200 em 0.028336s
+{"conclusoes":4,"conquistas":4,"promocoesPremium":0,"mediaGeral":8.63}
+
+
+=== 4. Consumidor VOLTA (stub-start.sh): retentativas com backoff entregam o que ficou retido ===
+(notificacoes pendentes: 0, 1s depois que o provedor voltou)
+  por assinante/status: {"analytics.aprendizagem": {"ENTREGUE": 4}, "notificacao.conclusao": {"ENTREGUE": 4}}
+  #8   notificacao.conclusao    ENTREGUE          tentativas=4 
+  #7   analytics.aprendizagem   ENTREGUE          tentativas=1 
+  #6   notificacao.conclusao    ENTREGUE          tentativas=4 
+  #5   analytics.aprendizagem   ENTREGUE          tentativas=1 
+  #4   notificacao.conclusao    ENTREGUE          tentativas=4 
+  #3   analytics.aprendizagem   ENTREGUE          tentativas=1 
+  provedor recebeu (sem duplicatas):
+   - Curso conquistado: Spring | duplicadas: 0
+   - Curso conquistado: Docker | duplicadas: 0
+   - Curso conquistado: Git | duplicadas: 0
