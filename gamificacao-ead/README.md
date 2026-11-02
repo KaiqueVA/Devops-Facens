@@ -1,5 +1,11 @@
 # Gamificação para Engajamento de Educação Continuada
 
+> **Exercício B1 (Architecture Lab):** o registro arquitetural com os 6 desafios, a matriz de ASRs, os ADRs, o C4 e as evidências está em
+> [`docs/arquitetura/README.md`](docs/arquitetura/README.md). Labs em [`labs/`](labs/), serviços Python em [`servicos/`](servicos/),
+> observabilidade em [`observabilidade/`](observabilidade/) e esteira em [`ci/`](ci/).
+>
+> O conteúdo abaixo documenta a **AC1** (linha de base do B1).
+
 Prática de **ATDD** — Disciplina de Testes de Software.
 Roteiro do quadro: **User Story → BDD (Cucumber) → TDD → Jacoco**.
 
