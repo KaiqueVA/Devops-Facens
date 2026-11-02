@@ -64,3 +64,4 @@ def recomendar(plano: str, cursos_concluidos: int, cursos_conquistados: int, qua
                            "score": score, "motivo": motivo})
     candidatos.sort(key=lambda c: (-c["score"], c["curso"]))
     return candidatos[:max(1, min(quantidade, 10))]
+# ajuste de versao do modelo
