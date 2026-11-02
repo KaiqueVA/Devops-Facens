@@ -1,5 +1,5 @@
 # Jenkins do laboratorio (ADR-006): controller com Docker CLI + Compose para build e deploy.
-FROM jenkins/jenkins:2.462.3-lts-jdk17
+FROM jenkins/jenkins:2.580.1-lts-jdk21
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
  && install -m 0755 -d /etc/apt/keyrings \
