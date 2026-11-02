@@ -34,6 +34,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!-- Desafio 6 (ADR-006): health check para o smoke test e metricas para o Prometheus -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -101,7 +110,7 @@
                     <excludes>
                         <exclude>br/facens/gamificacao/GamificacaoApplication.class</exclude>
                         <!-- DTOs sao records sem regra de negocio: so guardam e transportam dados -->
-                        <exclude>br/facens/gamificacao/aluno/dto/**</exclude>
+                        <exclude>br/facens/gamificacao/**/dto/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -119,9 +128,15 @@
                         <phase>verify</phase>
                         <goals><goal>check</goal></goals>
                         <configuration>
+                            <!-- ADR-006: gate de qualidade que BLOQUEIA o deploy no Jenkins.
+                                 Regra de negocio (dominio da gamificacao): 100% de linhas e branches.
+                                 Projeto inteiro: >= 95% linhas e >= 90% branches (adapters de infraestrutura). -->
                             <rules>
                                 <rule>
-                                    <element>BUNDLE</element>
+                                    <element>PACKAGE</element>
+                                    <includes>
+                                        <include>br.facens.gamificacao.gamificacao.domain</include>
+                                    </includes>
                                     <limits>
                                         <limit>
                                             <counter>LINE</counter>
@@ -132,6 +147,21 @@
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
                                             <minimum>1.00</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.95</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.90</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

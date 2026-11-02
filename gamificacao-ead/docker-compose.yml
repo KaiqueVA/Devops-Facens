@@ -29,17 +29,103 @@ services:
 
   app:
     build: .
+    image: gamificacao/core:${CORE_TAG:-local}   # Jenkins define a tag (ADR-006)
     container_name: gamificacao-app
     environment:
       SPRING_PROFILES_ACTIVE: postgres
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gamificacao
       SPRING_DATASOURCE_USERNAME: gamificacao
       SPRING_DATASOURCE_PASSWORD: gamificacao
+      IA_URL: http://ia-service:8000           # Desafio 3
+      NOTIFICACAO_URL: http://notificacao-stub:8090   # Desafio 4
+      EVENTOS_ENTREGA: ${EVENTOS_ENTREGA:-assincrona}  # "sincrona" so para a parte B do lab do D4
     ports:
       - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
+      # sem depends_on no ia-service de proposito: o Core sobe e opera mesmo com a IA fora (ADR-003)
+
+  # --- Desafio 3 (ADR-003): fronteira de IA em Python, deploy e escala proprios ---
+  ia-service:
+    build: ./servicos/ia-service
+    image: gamificacao/ia-service:${IA_TAG:-local}
+    container_name: gamificacao-ia
+    environment:
+      IA_LATENCIA_MS: "0"
+    ports:
+      - "8000:8000"
+
+  # --- Desafio 4 (ADR-004): provedor EXTERNO de notificacoes simulado (pode cair) ---
+  notificacao-stub:
+    build: ./servicos/notificacao-stub
+    container_name: gamificacao-notificacao-stub
+    ports:
+      - "8090:8090"
+
+  # --- Desafio 5 (ADR-005): broker MQTT + gateway (o Core nao fala MQTT) ---
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: gamificacao-mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./servicos/iot-gateway/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+
+  iot-gateway:
+    build: ./servicos/iot-gateway
+    image: gamificacao/iot-gateway:${GATEWAY_TAG:-local}
+    container_name: gamificacao-iot-gateway
+    environment:
+      MQTT_HOST: mosquitto
+      CORE_URL: http://app:8080
+      METRICAS_PORTA: "9101"
+    ports:
+      - "9101:9101"
+    depends_on:
+      - mosquitto
+
+  # --- Desafio 6 (ADR-006): observabilidade ---
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: gamificacao-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./observabilidade/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observabilidade/prometheus/alertas.yml:/etc/prometheus/alertas.yml:ro
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: gamificacao-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/arquitetura-b1.json
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./observabilidade/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./observabilidade/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+
+  # --- Desafio 6: Jenkins do lab (so sobe com: docker compose --profile ci up -d jenkins) ---
+  jenkins:
+    profiles: ["ci"]
+    build: ./ci/jenkins
+    container_name: gamificacao-jenkins
+    user: root
+    ports:
+      - "8081:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
   postgres_data:
+  mosquitto_data:
+  jenkins_home:

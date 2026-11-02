@@ -1,0 +1,27 @@
+# JaCoCo (gate do ADR-006): dominio 100% linhas/branches; projeto >= 95% linhas e >= 90% branches
+| Pacote | Linhas | Branches |
+|---|---:|---:|
+| `analytics` | 100% | 100% |
+| `eventos.api` | 100% | - |
+| `eventos.outbox` | 100% | 100% |
+| `gamificacao.adapter.memoria` | 100% | 100% |
+| `gamificacao.adapter.persistence` | 100% | - |
+| `gamificacao.adapter.web` | 100% | - |
+| `gamificacao.api` | 100% | - |
+| `gamificacao.application` | 100% | - |
+| `gamificacao.domain` | 100% | 100% |
+| `iot.adapter` | 100% | 100% |
+| `iot.api` | 100% | - |
+| `iot.application` | 100% | 100% |
+| `notificacao.adapter` | 100% | - |
+| `notificacao.application` | 100% | 100% |
+| `notificacao.application.port` | 100% | - |
+| `ranking.application` | 100% | 100% |
+| `ranking.infra` | 100% | - |
+| `ranking.web` | 100% | - |
+| `recomendacao.adapter` | 100% | 100% |
+| `recomendacao.application` | 100% | - |
+| `recomendacao.application.port` | 100% | - |
+| `recomendacao.web` | 100% | - |
+| **TOTAL** | **100.0%** | **100.0%** |
+All coverage checks have been met.

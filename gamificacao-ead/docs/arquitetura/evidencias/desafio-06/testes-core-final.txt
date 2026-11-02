@@ -1,0 +1,94 @@
+# Suite do Core no estado final do B1 (mesmos testes que o stage 'Build + testes + gates' do Jenkins executa)
+# Total: 91 testes | falhas: 0
+
+OK   | AlunoControllerTest | CT-API-01 - POST /alunos retorna 201 com o AlunoResponse
+OK   | AlunoControllerTest | CT-API-02 - POST /alunos/{id}/conclusoes retorna 200
+OK   | AlunoControllerTest | CT-API-03 - forum, moedas, premiacao e busca retornam 200
+OK   | AlunoControllerTest | CT-API-04 - regra de negocio violada retorna 400 com a mensagem
+OK   | AlunoRepositorioEmMemoriaTest | CTR-01 - salvar gera id e preserva todo o estado do agregado
+OK   | AlunoRepositorioEmMemoriaTest | CTR-02 - salvar de novo atualiza em vez de duplicar
+OK   | AlunoRepositorioEmMemoriaTest | CTR-03 - id inexistente devolve vazio
+OK   | AlunoRepositorioEmMemoriaTest | CTR-04 - destaque do forum segue o CriterioDoForum do dominio
+OK   | AlunoRepositorioEmMemoriaTest | CTR-05 - sem elegiveis, nao ha destaque
+OK   | AlunoRepositorioJpaTest | CTR-01 - salvar gera id e preserva todo o estado do agregado
+OK   | AlunoRepositorioJpaTest | CTR-02 - salvar de novo atualiza em vez de duplicar
+OK   | AlunoRepositorioJpaTest | CTR-03 - id inexistente devolve vazio
+OK   | AlunoRepositorioJpaTest | CTR-04 - destaque do forum segue o CriterioDoForum do dominio
+OK   | AlunoRepositorioJpaTest | CTR-05 - sem elegiveis, nao ha destaque
+OK   | AlunoTest | CT-01 - deve liberar 3 cursos ao concluir com media acima de 7,0
+OK   | AlunoTest | CT-02 - media exatamente 7,0 nao libera cursos extras
+OK   | AlunoTest | CT-03 - nome do curso e obrigatorio
+OK   | AlunoTest | CT-04 - media deve estar entre 0,0 e 10,0
+OK   | AlunoTest | CT-05 - nao deve concluir curso sem saldo na assinatura
+OK   | AlunoTest | CT-06 - e-mail do aluno e obrigatorio
+OK   | AlunoTest | CT-07 - ao conquistar 12 cursos vira Premium com voucher e 3 moedas
+OK   | AlunoTest | CT-08 - aluno ja Premium nao recebe a promocao duas vezes
+OK   | AlunoTest | CT-09 - aluno Basico nao possui moedas para converter
+OK   | AlunoTest | CT-10 - destino da moeda e obrigatorio
+OK   | AlunoTest | CT-11 - quantidade de moedas deve ser maior que zero
+OK   | AlunoTest | CT-12 - nao deve converter mais moedas do que possui
+OK   | AlunoTest | CT-13 - deve converter moedas em conhecimento (novos cursos)
+OK   | AlunoTest | CT-14 - deve converter moedas em criptomoeda
+OK   | AlunoTest | CT-15 - acumular mantem o saldo de moedas com o aluno
+OK   | AlunoTest | CT-16 - participacao no forum nao pode ser negativa
+OK   | AlunoTest | CT-17 - participacao no forum acumula e identifica quem ajudou outros
+OK   | AlunoTest | CT-18 - premio do forum da 1 curso e zera a participacao do mes
+OK   | AlunoTest | CT-19 - reconstituir devolve o mesmo estado, sem reaplicar regras (ADR-002)
+OK   | AlunoTest | CT-20 - concluirCurso informa o que aconteceu: conquista, cursos liberados e promocao
+OK   | ArquiteturaModularTest | ARQ-01 - modulos so dependem do contrato publico (api) de modulos declarados
+OK   | ArquiteturaModularTest | ARQ-02 - todo pacote de primeiro nivel e um modulo declarado
+OK   | ArquiteturaModularTest | ARQ-03 - o verificador detecta uma violacao (prova de que a regra funciona)
+OK   | ArquiteturaModularTest | ARQ-04 - dominio da gamificacao nao conhece framework, banco nem adapters (ADR-002)
+OK   | ArquiteturaModularTest | ARQ-05 - casos de uso dependem de portas, nunca de adapters ou de JPA (ADR-002)
+OK   | EntregaPendenteTest | EVT-U1 - backoff exponencial 1s, 2s, 4s, limitado ao teto, e DLQ ao esgotar
+OK   | EntregaSincronaTest | EVT-08 - modo sincrono: provedor no ar entrega na hora; provedor fora DERRUBA a conclusao
+OK   | EnumsTest | CT-ENUM-01 - PlanoAssinatura tem BASICO e PREMIUM
+OK   | EnumsTest | CT-ENUM-02 - DestinoMoeda tem os tres destinos do case
+OK   | EventoIotIntegracaoTest | IOT-01 - evento novo: 201, gravado e encaminhado ao ecossistema pelo outbox
+OK   | EventoIotIntegracaoTest | IOT-02 - reentrega (QoS 1) do mesmo eventoId: 200 DUPLICADO, sem efeito colateral
+OK   | EventoIotIntegracaoTest | IOT-03 - evento atrasado (guardado no dispositivo por horas) e aceito
+OK   | EventoIotIntegracaoTest | IOT-04 - invalidos viram 422 (o gateway manda para a DLQ): sem id, sem campos, futuro, aluno inexistente
+OK   | Gamificacao para engajamento de educacao continuada | Aluno Premium converte moedas em conhecimento
+OK   | Gamificacao para engajamento de educacao continuada | Concluir curso com media acima de 7,0 libera tres cursos
+OK   | Gamificacao para engajamento de educacao continuada | Conquistar 12 cursos promove o aluno a Premium
+OK   | Gamificacao para engajamento de educacao continuada | Destaque do forum ganha um curso no fim do mes
+OK   | Gamificacao para engajamento de educacao continuada | Media fora da faixa e recusada e nao altera o estado do aluno
+OK   | GamificacaoServiceTest | CT-SRV-01 - deve matricular aluno no plano Basico
+OK   | GamificacaoServiceTest | CT-SRV-02 - deve concluir curso e liberar o bonus
+OK   | GamificacaoServiceTest | CT-SRV-03 - deve registrar participacao no forum
+OK   | GamificacaoServiceTest | CT-SRV-04 - deve converter moedas de aluno Premium
+OK   | GamificacaoServiceTest | CT-SRV-05 - premio vai para quem tem mais topicos, desempatando por comentarios
+OK   | GamificacaoServiceTest | CT-SRV-06 - quem nao ajudou outros participantes nao concorre ao premio
+OK   | GamificacaoServiceTest | CT-SRV-07 - deve buscar aluno existente
+OK   | GamificacaoServiceTest | CT-SRV-08 - deve falhar ao buscar aluno inexistente
+OK   | GamificacaoServiceTest | CT-SRV-09 - concluir curso publica CursoConcluido com o resultado da regra (ADR-004)
+OK   | GamificacaoServiceTest | CT-SRV-10 - regra violada nao publica evento
+OK   | IaForaDoArIntegracaoTest | CT-REC-05 - com a IA fora: conclusao de curso funciona e recomendacao degrada
+OK   | IaForaDoArIntegracaoTest | CT-REC-06 - erros do modulo viram 404 e 503 com Retry-After
+OK   | IaHttpAdapterTest | CT-IA-01 - IA no ar: converte a resposta e ignora campos extras do contrato
+OK   | IaHttpAdapterTest | CT-IA-02 - assistente no ar: devolve resposta e fontes
+OK   | IaHttpAdapterTest | CT-IA-03 - IA devolve 503: vira IaIndisponivelException
+OK   | IaHttpAdapterTest | CT-IA-04 - IA lenta: o timeout corta a espera (~500 ms), nao trava o Core
+OK   | IaHttpAdapterTest | CT-IA-05 - IA desligada: conexao recusada vira IaIndisponivelException
+OK   | IaHttpAdapterTest | CT-IA-06 - resposta sem dados tambem e tratada como indisponibilidade
+OK   | MetricasArquiteturaisTest | OBS-01 - ia.recomendacoes{origem} separa IA de catalogo padrao (ADR-003)
+OK   | MetricasArquiteturaisTest | OBS-02 - outbox.entregas{status} e idade da pendente mais antiga (ADR-004)
+OK   | MetricasArquiteturaisTest | OBS-03 - iot.eventos.recebidos{resultado} conta novos e duplicados (ADR-005)
+OK   | NotificacaoDeConclusaoTest | NOT-01 - mensagem muda conforme o resultado: conquista, Premium ou so conclusao
+OK   | OutboxIntegracaoTest | EVT-01 - concluir curso grava 1 entrega por assinante, mesmo eventoId, na mesma transacao
+OK   | OutboxIntegracaoTest | EVT-02 - regra violada faz rollback: nenhum evento fica orfao no outbox
+OK   | OutboxIntegracaoTest | EVT-03 - provedor fora: analytics entregue, notificacao fica PENDENTE com backoff
+OK   | OutboxIntegracaoTest | EVT-04 - provedor volta: a notificacao retida e entregue uma vez, com Idempotency-Key
+OK   | OutboxIntegracaoTest | EVT-05 - esgotou tentativas: FALHOU_DEFINITIVO (DLQ) e reprocessamento manual
+OK   | OutboxIntegracaoTest | EVT-06 - reentrega do mesmo evento nao duplica o registro de aprendizagem
+OK   | OutboxIntegracaoTest | EVT-07 - assinante desconhecido no outbox vira falha registrada, sem derrubar o relay
+OK   | OutboxIntegracaoTest | EVT-09 - o agendador so dispara o relay quando habilitado
+OK   | RankingIntegracaoTest | CT-RNK-04 - ranking ordena por cursos conquistados, depois moedas, depois id
+OK   | RankingServiceTest | CT-RNK-01 - posicoes continuam a numeracao entre paginas
+OK   | RankingServiceTest | CT-RNK-02 - tamanho acima do maximo e limitado (nunca le a base inteira)
+OK   | RankingServiceTest | CT-RNK-03 - pagina negativa e tamanho invalido usam o padrao
+OK   | RecomendacaoServiceTest | CT-REC-01 - IA no ar: recomendacao personalizada, nao degradada
+OK   | RecomendacaoServiceTest | CT-REC-02 - IA fora: catalogo padrao com degradado=true (sem erro para o aluno)
+OK   | RecomendacaoServiceTest | CT-REC-03 - aluno inexistente nao chega a chamar a IA
+OK   | RecomendacaoServiceTest | CT-REC-04 - assistente no ar responde; fora, vira AssistenteIndisponivel (503)
+OK   | RecomendacaoServiceTest | CT-REC-07 - controller repassa a resposta do assistente quando a IA esta no ar

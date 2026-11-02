@@ -1,0 +1,20 @@
+# Gate 'Testes das regras de alerta' do pipeline do Core (promtool 2.54.1)
+
+$ promtool check config prometheus.yml
+Checking prometheus.yml
+  SUCCESS: 1 rule files found
+ SUCCESS: prometheus.yml is valid prometheus config file syntax
+
+Checking alertas.yml
+  SUCCESS: 6 rules found
+
+
+$ promtool check rules alertas.yml
+Checking alertas.yml
+  SUCCESS: 6 rules found
+
+
+$ promtool test rules testes-alertas.yml
+Unit Testing:  testes-alertas.yml
+  SUCCESS
+

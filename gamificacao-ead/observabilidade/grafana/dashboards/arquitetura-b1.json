@@ -1,0 +1,423 @@
+{
+  "uid": "arquitetura-b1",
+  "title": "Arquitetura B1 - evidencias dos ADRs",
+  "tags": [
+    "b1",
+    "arquitetura"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Componentes no ar (up)",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 4
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "up",
+          "legendFormat": "{{job}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "FORA"
+                },
+                "1": {
+                  "text": "NO AR"
+                }
+              }
+            }
+          ]
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "description": "ADR-006: cada componente com deploy proprio e observado separadamente",
+      "id": 1
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-003 · % de recomendacoes degradadas (catalogo padrao)",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(ia_recomendacoes_total{origem=\"catalogo_padrao\"}[1m])) / clamp_min(sum(rate(ia_recomendacoes_total[1m])), 1e-9)",
+          "legendFormat": "degradadas"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.05
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {},
+      "description": "Gatilho do circuit breaker: > 5% por 1 min",
+      "id": 2
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-003 · recomendacoes por origem (req/s)",
+      "gridPos": {
+        "x": 8,
+        "y": 4,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (origem) (rate(ia_recomendacoes_total[1m]))",
+          "legendFormat": "{{origem}}"
+        },
+        {
+          "refId": "B",
+          "expr": "sum(rate(ia_assistente_indisponivel_total[1m]))",
+          "legendFormat": "assistente 503"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {},
+      "id": 3
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-003 · latencia p95 do ia-service",
+      "gridPos": {
+        "x": 16,
+        "y": 4,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le, endpoint) (rate(ia_latencia_segundos_bucket[5m])))",
+          "legendFormat": "{{endpoint}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.8
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {},
+      "description": "Linha vermelha = timeout do Core para recomendacao (0,8 s)",
+      "id": 4
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-004 · outbox por status",
+      "gridPos": {
+        "x": 0,
+        "y": 12,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "outbox_entregas",
+          "legendFormat": "{{status}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {},
+      "description": "PENDENTE cresce quando o provedor de notificacao cai; FALHOU_DEFINITIVO = DLQ",
+      "id": 5
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-004 · idade da entrega pendente mais antiga",
+      "gridPos": {
+        "x": 8,
+        "y": 12,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "outbox_pendente_mais_antiga_seconds",
+          "legendFormat": "mais antiga"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 120
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {},
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-004 · p95 da conclusao de curso (sincrona)",
+      "gridPos": {
+        "x": 16,
+        "y": 12,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{uri=\"/alunos/{id}/conclusoes\"}[5m])))",
+          "legendFormat": "p95 conclusao"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "options": {},
+      "description": "Deve continuar baixo mesmo com o provedor de notificacao fora",
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-005 · eventos IoT aceitos no Core",
+      "gridPos": {
+        "x": 0,
+        "y": 20,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (resultado) (increase(iot_eventos_recebidos_total[5m]))",
+          "legendFormat": "{{resultado}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {},
+      "description": "Duplicados > 0 e esperado (QoS 1); novos deve igualar publicados",
+      "id": 8
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-005 · iot-gateway: retentativas e fila",
+      "gridPos": {
+        "x": 8,
+        "y": 20,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "increase(iot_retentativas_total[5m])",
+          "legendFormat": "retentativas (5m)"
+        },
+        {
+          "refId": "B",
+          "expr": "iot_fila_interna",
+          "legendFormat": "fila interna"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {},
+      "id": 9
+    },
+    {
+      "type": "timeseries",
+      "title": "ADR-001 · p95 do GET /ranking",
+      "gridPos": {
+        "x": 16,
+        "y": 20,
+        "w": 8,
+        "h": 8
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(http_server_requests_seconds_bucket{uri=\"/ranking\"}[5m])))",
+          "legendFormat": "p95 ranking"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.3
+              }
+            ]
+          },
+          "custom": {
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "options": {},
+      "description": "Gatilho para reavaliar a separacao do ranking: > 300 ms por 5 min",
+      "id": 10
+    }
+  ]
+}

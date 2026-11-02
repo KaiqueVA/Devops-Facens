@@ -1,0 +1,32 @@
+# Desafio 6 - lab completo na maquina da equipe (docker compose: Core, ia-service, iot-gateway, Prometheus, Grafana)
+# Comando: bash labs/desafio-06/executar-lab.sh   (31/10/2026)
+
+=== 20:41:14 1. Alvos do Prometheus (um por componente) ===
+  core         up    http://app:8080/actuator/prometheus
+  ia-service   up    http://ia-service:8000/metrics/
+  iot-gateway  up    http://iot-gateway:9101/metrics
+
+=== 20:41:14 2. Trafego normal (recomendacoes + ranking a cada 0,5 s) ===
+  (nenhum alerta ativo)
+
+=== 20:41:44 3. PROVOCANDO: ia-service parado (docker compose stop ia-service) com trafego continuo ===
+  +10s firing: nenhum
+  +20s firing: nenhum
+  +30s firing: nenhum
+  +40s firing: nenhum
+  +50s firing: ComponenteFora
+  +60s firing: ComponenteFora
+  +70s firing: ComponenteFora
+  +80s firing: ComponenteFora
+  +90s firing: ComponenteFora IaDegradada
+  ComponenteFora             FIRING   job=ia-service   ADR-006 (deploy independente: cada componente e observado separadamente)
+  IaDegradada                FIRING   job=-            ADR-003 - gatilho para adotar circuit breaker
+
+=== 20:43:36 4. RECUPERANDO: ia-service de volta (docker compose start ia-service) ===
+  +10s firing: ComponenteFora IaDegradada
+  +30s firing: IaDegradada
+  +40s firing: IaDegradada
+  +50s firing: IaDegradada
+  +60s firing: IaDegradada
+  +70s firing: nenhum
+  (nenhum alerta ativo)
