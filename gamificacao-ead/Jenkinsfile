@@ -1,0 +1,125 @@
+// Pipeline do CORE (ADR-006: um pipeline por componente com deploy independente).
+// Job "core-gamificacao" -> Script Path: gamificacao-ead/Jenkinsfile
+// Gates que BLOQUEIAM o deploy: testes de unidade + BDD, regras de arquitetura (ARQ-01..05),
+// cobertura JaCoCo (dominio 100%, projeto 95%/90%), testes das regras de alerta, smoke test.
+pipeline {
+    agent any
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+    parameters {
+        booleanParam(name: 'FORCAR', defaultValue: false, description: 'Rodar mesmo sem mudancas no Core')
+    }
+    environment {
+        COMPOSE_PROJECT_NAME = 'gamificacao-ead'
+        DIR = 'gamificacao-ead'
+        CAMINHOS = 'gamificacao-ead/src gamificacao-ead/pom.xml gamificacao-ead/Dockerfile gamificacao-ead/Jenkinsfile gamificacao-ead/observabilidade'
+    }
+    stages {
+        stage('Detectar mudancas no Core') {
+            steps {
+                script {
+                    def base = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
+                    def mudou = params.FORCAR || !base ||
+                        sh(returnStdout: true, script: "git diff --name-only ${base} HEAD -- ${env.CAMINHOS}").trim()
+                    env.MUDOU = mudou ? 'true' : 'false'
+                    env.TAG = sh(returnStdout: true, script: 'git rev-parse --short=8 HEAD').trim()
+                    echo "Core mudou? ${env.MUDOU} | imagem gamificacao/core:${env.TAG}"
+                    if (env.MUDOU == 'false') { currentBuild.result = 'NOT_BUILT' }
+                }
+            }
+        }
+        stage('Build + testes + gates de arquitetura e cobertura') {
+            when { environment name: 'MUDOU', value: 'true' }
+            agent {
+                docker {
+                    image 'maven:3.9-eclipse-temurin-17'
+                    args '-v maven-repo:/root/.m2'
+                    reuseNode true
+                }
+            }
+            steps {
+                dir(env.DIR) {
+                    // verify = unidade + Cucumber + ArquiteturaModularTest + jacoco:check
+                    sh 'mvn -B clean verify'
+                }
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: 'gamificacao-ead/target/surefire-reports/*.xml'
+                    archiveArtifacts allowEmptyArchive: true,
+                        artifacts: 'gamificacao-ead/target/site/jacoco/**, gamificacao-ead/target/cucumber-report.html'
+                }
+            }
+        }
+        stage('Testes das regras de alerta') {
+            when { environment name: 'MUDOU', value: 'true' }
+            agent {
+                docker {
+                    image 'prom/prometheus:v2.54.1'
+                    args '--entrypoint='
+                    reuseNode true
+                }
+            }
+            steps {
+                dir("${env.DIR}/observabilidade/prometheus") {
+                    sh 'promtool check rules alertas.yml && promtool test rules testes-alertas.yml'
+                }
+            }
+        }
+        stage('Imagem Docker') {
+            when { environment name: 'MUDOU', value: 'true' }
+            steps {
+                sh "docker build -t gamificacao/core:${env.TAG} ${env.DIR}"
+            }
+        }
+        stage('Deploy (homologacao) - so o Core') {
+            when {
+                allOf {
+                    environment name: 'MUDOU', value: 'true'
+                    branch pattern: 'main|B1', comparator: 'REGEXP'
+                }
+            }
+            steps {
+                dir(env.DIR) {
+                    sh "CORE_TAG=${env.TAG} docker compose up -d --no-deps --no-build app"
+                }
+            }
+        }
+        stage('Smoke test') {
+            when {
+                allOf {
+                    environment name: 'MUDOU', value: 'true'
+                    branch pattern: 'main|B1', comparator: 'REGEXP'
+                }
+            }
+            steps {
+                sh '''
+                  for i in $(seq 1 60); do
+                    curl -fs http://app:8080/actuator/health | grep -q '"status":"UP"' && break; sleep 2
+                  done
+                  curl -fs http://app:8080/actuator/health | grep -q '"status":"UP"'
+                  curl -fs "http://app:8080/ranking?tamanho=1" > /dev/null
+                  # as metricas que validam os ADRs precisam estar expostas
+                  curl -fs http://app:8080/actuator/prometheus > /tmp/metricas.txt
+                  for m in ia_recomendacoes_total outbox_entregas iot_eventos_recebidos_total http_server_requests_seconds_bucket; do
+                    grep -q "^$m" /tmp/metricas.txt || { echo "metrica ausente: $m"; exit 1; }
+                  done
+                '''
+            }
+            post {
+                success {
+                    sh "docker tag gamificacao/core:${env.TAG} gamificacao/core:estavel"
+                }
+                failure {
+                    echo 'Smoke test falhou: voltando para a ultima imagem estavel do Core'
+                    dir(env.DIR) {
+                        sh 'CORE_TAG=estavel docker compose up -d --no-deps --no-build app || true'
+                    }
+                }
+            }
+        }
+    }
+}

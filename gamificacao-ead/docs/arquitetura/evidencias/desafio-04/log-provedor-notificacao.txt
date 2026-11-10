@@ -1,0 +1,6 @@
+[stub] provedor de notificacoes ouvindo na porta 8090
+[stub] ENVIADA para lab410010@facens.br: Curso conquistado: Java (chave c60d3fd2-de49-4849-bea3-1165830e3c65)
+[stub] provedor de notificacoes ouvindo na porta 8090
+[stub] ENVIADA para lab410010@facens.br: Curso conquistado: Spring (chave 3b541242-0ad7-47dc-8e48-028c0e81780d)
+[stub] ENVIADA para lab410010@facens.br: Curso conquistado: Docker (chave 299a1662-5f61-4255-b045-ba9f50ae0313)
+[stub] ENVIADA para lab410010@facens.br: Curso conquistado: Git (chave 7d55f15b-984b-4a7c-9368-e4eca34ffc19)

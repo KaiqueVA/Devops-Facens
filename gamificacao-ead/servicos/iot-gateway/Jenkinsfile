@@ -1,0 +1,98 @@
+// Pipeline do iot-gateway (MQTT -> Core) - ADR-006: pipeline e deploy independentes do Core.
+// Job "iot-gateway" -> Script Path: gamificacao-ead/servicos/iot-gateway/Jenkinsfile
+pipeline {
+    agent any
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+    parameters {
+        booleanParam(name: 'FORCAR', defaultValue: false, description: 'Rodar mesmo sem mudancas no componente')
+    }
+    environment {
+        COMPOSE_PROJECT_NAME = 'gamificacao-ead'
+        DIR = 'gamificacao-ead/servicos/iot-gateway'
+    }
+    stages {
+        stage('Detectar mudancas') {
+            steps {
+                script {
+                    def base = env.GIT_PREVIOUS_SUCCESSFUL_COMMIT
+                    def mudou = params.FORCAR || !base ||
+                        sh(returnStdout: true, script: "git diff --name-only ${base} HEAD -- ${env.DIR}").trim()
+                    env.MUDOU = mudou ? 'true' : 'false'
+                    env.TAG = sh(returnStdout: true, script: 'git rev-parse --short=8 HEAD').trim()
+                    echo "iot-gateway mudou? ${env.MUDOU}"
+                    if (env.MUDOU == 'false') { currentBuild.result = 'NOT_BUILT' }
+                }
+            }
+        }
+        stage('Testes (pytest)') {
+            when { environment name: 'MUDOU', value: 'true' }
+            agent {
+                docker {
+                    image 'python:3.12-slim'
+                    reuseNode true
+                }
+            }
+            steps {
+                dir(env.DIR) {
+                    sh '''
+                      python -m venv .venv && . .venv/bin/activate
+                      pip install -q -r requirements-dev.txt
+                      python -m pytest -q --junitxml=relatorio-pytest.xml
+                    '''
+                }
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: "${env.DIR}/relatorio-pytest.xml"
+                }
+            }
+        }
+        stage('Imagem Docker') {
+            when { environment name: 'MUDOU', value: 'true' }
+            steps {
+                sh "docker build -t gamificacao/iot-gateway:${env.TAG} ${env.DIR}"
+            }
+        }
+        stage('Deploy (homologacao) - so este componente') {
+            when {
+                allOf {
+                    environment name: 'MUDOU', value: 'true'
+                    branch pattern: 'main|B1', comparator: 'REGEXP'
+                }
+            }
+            steps {
+                dir('gamificacao-ead') {
+                    sh "GATEWAY_TAG=${env.TAG} docker compose up -d --no-deps --no-build iot-gateway"
+                }
+            }
+        }
+        stage('Smoke test') {
+            when {
+                allOf {
+                    environment name: 'MUDOU', value: 'true'
+                    branch pattern: 'main|B1', comparator: 'REGEXP'
+                }
+            }
+            steps {
+                sh '''
+                  sleep 5
+                  curl -fs http://iot-gateway:9101/metrics | grep -q "^iot_mensagens_recebidas_total"
+                '''
+            }
+            post {
+                success {
+                    sh "docker tag gamificacao/iot-gateway:${env.TAG} gamificacao/iot-gateway:estavel"
+                }
+                failure {
+                    dir('gamificacao-ead') {
+                        sh 'GATEWAY_TAG=estavel docker compose up -d --no-deps --no-build iot-gateway || true'
+                    }
+                }
+            }
+        }
+    }
+}

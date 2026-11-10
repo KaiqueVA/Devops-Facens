@@ -1,0 +1,11 @@
+iot_mensagens_recebidas_total 11.0
+iot_mensagens_recebidas_created 1.7934846084342577e+09
+iot_encaminhadas_total{resultado="novo"} 9.0
+iot_encaminhadas_total{resultado="duplicado"} 1.0
+iot_encaminhadas_total{resultado="invalido"} 1.0
+iot_encaminhadas_created{resultado="novo"} 1.7934846084640863e+09
+iot_encaminhadas_created{resultado="duplicado"} 1.7934846338273978e+09
+iot_encaminhadas_created{resultado="invalido"} 1.793484638909321e+09
+iot_retentativas_total 4.0
+iot_retentativas_created 1.793484608434293e+09
+iot_fila_interna 0.0

@@ -1,0 +1,22 @@
+2026-10-31 19:10:00,762 INFO iot-gateway: lab/+/+/eventos -> http://localhost:8080/iot/eventos
+2026-10-31 19:10:00,762 INFO conectado ao broker localhost:1883 (sessao retomada=False)
+2026-10-31 19:10:02,061 INFO evento d15bd1bd32d04c9b -> Core 201 (novo)
+2026-10-31 19:10:02,302 INFO evento 3ff7b00e68df4648 -> Core 201 (novo)
+2026-10-31 19:10:02,606 INFO evento f05870d410124024 -> Core 201 (novo)
+2026-10-31 19:10:08,436 INFO iot-gateway: lab/+/+/eventos -> http://localhost:8080/iot/eventos
+2026-10-31 19:10:08,436 INFO conectado ao broker localhost:1883 (sessao retomada=True)
+2026-10-31 19:10:08,463 INFO evento 09ef834801e94a93 -> Core 201 (novo)
+2026-10-31 19:10:08,474 INFO evento 63e6911492fb4c5c -> Core 201 (novo)
+2026-10-31 19:10:08,486 INFO evento ba6ba9f8c2fe4508 -> Core 201 (novo)
+2026-10-31 19:10:11,471 WARNING Core indisponivel (<urlopen error [Errno 111] Connection refused>); evento 411fc91f28c040df retido, nova tentativa em 1s
+2026-10-31 19:10:12,472 WARNING Core indisponivel (<urlopen error [Errno 111] Connection refused>); evento 411fc91f28c040df retido, nova tentativa em 2s
+2026-10-31 19:10:14,473 WARNING Core indisponivel (<urlopen error [Errno 111] Connection refused>); evento 411fc91f28c040df retido, nova tentativa em 4s
+2026-10-31 19:10:18,474 WARNING Core indisponivel (<urlopen error [Errno 111] Connection refused>); evento 411fc91f28c040df retido, nova tentativa em 8s
+2026-10-31 19:10:26,610 INFO evento 411fc91f28c040df -> Core 201 (novo)
+2026-10-31 19:10:26,623 INFO evento 52b47fd2d8634cb6 -> Core 201 (novo)
+2026-10-31 19:10:27,407 INFO evento be62eaea6ac2454c -> Core 201 (novo)
+2026-10-31 19:10:27,708 INFO evento 24816484a3004b4d -> Core 201 (novo)
+2026-10-31 19:10:32,712 INFO evento 93b952ba1a0d4e3b -> Core 201 (novo)
+2026-10-31 19:10:32,722 INFO evento 2df6c877e527440f -> Core 201 (novo)
+2026-10-31 19:10:33,827 INFO evento d15bd1bd32d04c9b -> Core 200 (duplicado)
+2026-10-31 19:10:38,909 ERROR evento invalido enviado para a DLQ: tipo desconhecido: X

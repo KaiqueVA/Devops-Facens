@@ -1,0 +1,31 @@
+# Perfil: memoria  (log de inicializacao)
+b.f.gamificacao.GamificacaoApplication   : The following 1 profile is active: "memoria"
+b.f.g.g.a.m.AlunoRepositorioEmMemoria    : Porta AlunoRepositorio -> adapter EM MEMORIA (sem banco)
+b.f.gamificacao.GamificacaoApplication   : Started GamificacaoApplication in 4.535 seconds (process running for 4.88)
+
+$ POST /alunos {"email":"ana@facens.br"}
+{"id":1,"email":"ana@facens.br","plano":"BASICO","cursosDisponiveis":5,"cursosConcluidos":0,"cursosConquistados":0,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ POST /alunos {"email":"bia@facens.br"}
+{"id":2,"email":"bia@facens.br","plano":"BASICO","cursosDisponiveis":5,"cursosConcluidos":0,"cursosConquistados":0,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ POST /alunos/1/conclusoes {"curso":"Java Basico","media":8.5}
+{"id":1,"email":"ana@facens.br","plano":"BASICO","cursosDisponiveis":7,"cursosConcluidos":1,"cursosConquistados":1,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ POST /alunos/2/conclusoes {"curso":"Java Basico","media":6.0}
+{"id":2,"email":"bia@facens.br","plano":"BASICO","cursosDisponiveis":4,"cursosConcluidos":1,"cursosConquistados":0,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ POST /alunos/1/forum {"topicos":5,"comentarios":3}
+{"id":1,"email":"ana@facens.br","plano":"BASICO","cursosDisponiveis":7,"cursosConcluidos":1,"cursosConquistados":1,"moedas":0,"moedasEmCripto":0,"topicosNoForum":5,"comentariosNoForum":3,"voucherProjetoReal":false}
+
+$ POST /alunos/2/forum {"topicos":5,"comentarios":4}
+{"id":2,"email":"bia@facens.br","plano":"BASICO","cursosDisponiveis":4,"cursosConcluidos":1,"cursosConquistados":0,"moedas":0,"moedasEmCripto":0,"topicosNoForum":5,"comentariosNoForum":4,"voucherProjetoReal":false}
+
+$ POST /alunos/forum/premiacao 
+{"id":2,"email":"bia@facens.br","plano":"BASICO","cursosDisponiveis":5,"cursosConcluidos":1,"cursosConquistados":0,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ GET /alunos/2 
+{"id":2,"email":"bia@facens.br","plano":"BASICO","cursosDisponiveis":5,"cursosConcluidos":1,"cursosConquistados":0,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+$ GET /ranking?pagina=0&tamanho=5 
+[]

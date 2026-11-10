@@ -1,0 +1,11 @@
+tests/test_api.py::test_health_informa_modelo_e_base PASSED              [ 10%]
+tests/test_api.py::test_recomendacao_respeita_quantidade_e_versao_do_modelo PASSED [ 20%]
+tests/test_api.py::test_aluno_basico_nao_recebe_curso_premium PASSED     [ 30%]
+tests/test_api.py::test_aluno_premium_avancado_recebe_nivel_4 PASSED     [ 40%]
+tests/test_api.py::test_iniciante_recebe_cursos_introdutorios PASSED     [ 50%]
+tests/test_api.py::test_validacao_do_contrato PASSED                     [ 60%]
+tests/test_api.py::test_assistente_responde_com_fonte PASSED             [ 70%]
+tests/test_api.py::test_assistente_sem_contexto_nao_inventa PASSED       [ 80%]
+tests/test_api.py::test_metricas_expostas_para_prometheus PASSED         [ 90%]
+tests/test_api.py::test_latencia_de_lab_configuravel PASSED              [100%]
+======================== 10 passed, 1 warning in 0.23s =========================

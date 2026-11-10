@@ -1,0 +1,24 @@
+# Desafio 2 - resultado dos testes (domínio, casos de uso, contrato da porta nos 2 adapters, arquitetura)
+# Total da suíte: 57 testes, 0 falhas
+
+OK   | AlunoRepositorioEmMemoriaTest | CTR-01 - salvar gera id e preserva todo o estado do agregado
+OK   | AlunoRepositorioEmMemoriaTest | CTR-02 - salvar de novo atualiza em vez de duplicar
+OK   | AlunoRepositorioEmMemoriaTest | CTR-03 - id inexistente devolve vazio
+OK   | AlunoRepositorioEmMemoriaTest | CTR-04 - destaque do forum segue o CriterioDoForum do dominio
+OK   | AlunoRepositorioEmMemoriaTest | CTR-05 - sem elegiveis, nao ha destaque
+OK   | AlunoRepositorioJpaTest | CTR-01 - salvar gera id e preserva todo o estado do agregado
+OK   | AlunoRepositorioJpaTest | CTR-02 - salvar de novo atualiza em vez de duplicar
+OK   | AlunoRepositorioJpaTest | CTR-03 - id inexistente devolve vazio
+OK   | AlunoRepositorioJpaTest | CTR-04 - destaque do forum segue o CriterioDoForum do dominio
+OK   | AlunoRepositorioJpaTest | CTR-05 - sem elegiveis, nao ha destaque
+OK   | AlunoTest | CT-19 - reconstituir devolve o mesmo estado, sem reaplicar regras (ADR-002)
+OK   | ArquiteturaModularTest | ARQ-04 - dominio da gamificacao nao conhece framework, banco nem adapters (ADR-002)
+OK   | ArquiteturaModularTest | ARQ-05 - casos de uso dependem de portas, nunca de adapters ou de JPA (ADR-002)
+OK   | GamificacaoServiceTest | CT-SRV-01 - deve matricular aluno no plano Basico
+OK   | GamificacaoServiceTest | CT-SRV-02 - deve concluir curso e liberar o bonus
+OK   | GamificacaoServiceTest | CT-SRV-03 - deve registrar participacao no forum
+OK   | GamificacaoServiceTest | CT-SRV-04 - deve converter moedas de aluno Premium
+OK   | GamificacaoServiceTest | CT-SRV-05 - premio vai para quem tem mais topicos, desempatando por comentarios
+OK   | GamificacaoServiceTest | CT-SRV-06 - quem nao ajudou outros participantes nao concorre ao premio
+OK   | GamificacaoServiceTest | CT-SRV-07 - deve buscar aluno existente
+OK   | GamificacaoServiceTest | CT-SRV-08 - deve falhar ao buscar aluno inexistente

@@ -1,0 +1,9 @@
+2026-10-31T19:01:30.808-03:00 Entrega 4 (notificacao.conclusao / evento 3b541242-0ad7-47dc-8e48-028c0e81780d) falhou na tentativa 1 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:30.814-03:00 Entrega 6 (notificacao.conclusao / evento 299a1662-5f61-4255-b045-ba9f50ae0313) falhou na tentativa 1 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:30.820-03:00 Entrega 8 (notificacao.conclusao / evento 7d55f15b-984b-4a7c-9368-e4eca34ffc19) falhou na tentativa 1 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:32.828-03:00 Entrega 4 (notificacao.conclusao / evento 3b541242-0ad7-47dc-8e48-028c0e81780d) falhou na tentativa 2 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:32.832-03:00 Entrega 6 (notificacao.conclusao / evento 299a1662-5f61-4255-b045-ba9f50ae0313) falhou na tentativa 2 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:32.835-03:00 Entrega 8 (notificacao.conclusao / evento 7d55f15b-984b-4a7c-9368-e4eca34ffc19) falhou na tentativa 2 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:34.841-03:00 Entrega 4 (notificacao.conclusao / evento 3b541242-0ad7-47dc-8e48-028c0e81780d) falhou na tentativa 3 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:34.845-03:00 Entrega 6 (notificacao.conclusao / evento 299a1662-5f61-4255-b045-ba9f50ae0313) falhou na tentativa 3 -> PENDENTE: ResourceAccessException: I/O error on POST request for 
+2026-10-31T19:01:34.847-03:00 Entrega 8 (notificacao.conclusao / evento 7d55f15b-984b-4a7c-9368-e4eca34ffc19) falhou na tentativa 3 -> PENDENTE: ResourceAccessException: I/O error on POST request for 

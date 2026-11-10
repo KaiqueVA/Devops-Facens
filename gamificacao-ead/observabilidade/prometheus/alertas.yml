@@ -1,0 +1,61 @@
+# Cada alerta valida (ou dispara o gatilho de) uma decisao arquitetural registrada em ADR.
+groups:
+  - name: disponibilidade
+    rules:
+      - alert: ComponenteFora
+        expr: up == 0
+        for: 30s
+        labels: {severidade: critica}
+        annotations:
+          resumo: "{{ $labels.job }} nao responde ao Prometheus ha 30s"
+          adr: "ADR-006 (deploy independente: cada componente e observado separadamente)"
+
+  - name: ia
+    rules:
+      - alert: IaDegradada
+        expr: |
+          sum(rate(ia_recomendacoes_total{origem="catalogo_padrao"}[1m]))
+            / clamp_min(sum(rate(ia_recomendacoes_total[1m])), 1e-9) > 0.05
+        for: 1m
+        labels: {severidade: alta}
+        annotations:
+          resumo: "Mais de 5% das recomendacoes estao saindo do catalogo padrao"
+          adr: "ADR-003 - gatilho para adotar circuit breaker"
+
+  - name: eventos
+    rules:
+      - alert: NotificacoesRetidas
+        expr: outbox_pendente_mais_antiga_seconds > 120
+        for: 1m
+        labels: {severidade: alta}
+        annotations:
+          resumo: "Ha entrega pendente no outbox ha mais de 2 minutos (consumidor fora?)"
+          adr: "ADR-004 - consistencia eventual saiu do esperado"
+      - alert: OutboxComFalhaDefinitiva
+        expr: outbox_entregas{status="FALHOU_DEFINITIVO"} > 0
+        labels: {severidade: media}
+        annotations:
+          resumo: "Entregas esgotaram as tentativas: reprocessar em POST /eventos/outbox/reprocessar"
+          adr: "ADR-004 - recuperabilidade (DLQ)"
+
+  - name: iot
+    rules:
+      - alert: IotGatewayRetendoEventos
+        expr: iot_fila_interna > 0 and increase(iot_retentativas_total[2m]) > 0
+        for: 1m
+        labels: {severidade: alta}
+        annotations:
+          resumo: "O iot-gateway esta retendo eventos porque o Core nao aceita"
+          adr: "ADR-005 - eventos seguros no broker, mas sem chegar ao Core"
+
+  - name: desempenho
+    rules:
+      - alert: RankingLento
+        expr: |
+          histogram_quantile(0.95,
+            sum by (le) (rate(http_server_requests_seconds_bucket{uri="/ranking"}[5m]))) > 0.3
+        for: 5m
+        labels: {severidade: media}
+        annotations:
+          resumo: "p95 do GET /ranking acima de 300 ms"
+          adr: "ADR-001 - gatilho para reavaliar a separacao do ranking"

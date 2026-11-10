@@ -1,0 +1,18 @@
+
+=== B. ALTERNATIVA REJEITADA: Core em modo sincrono (EVENTOS_ENTREGA=sincrona) ===
+$ POST /alunos/1/conclusoes {"curso":"Java","media":9} ->  HTTP 200 em 0.210955s
+{"id":1,"email":"sincrono9715@facens.br","plano":"BASICO","cursosDisponiveis":7,"cursosConcluidos":1,"cursosConquistados":1,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+
+=== B. provedor de notificacao PARADO ===
+$ POST /alunos/1/conclusoes {"curso":"Spring","media":9} ->  HTTP 500 em 0.031555s
+{"timestamp":"2026-10-31T22:01:50.318+00:00","status":500,"error":"Internal Server Error","path":"/alunos/1/conclusoes"}
+
+--- estado do aluno depois da falha (a 2a conclusao foi perdida):
+$ GET /alunos/1  ->  HTTP 200 em 0.004713s
+{"id":1,"email":"sincrono9715@facens.br","plano":"BASICO","cursosDisponiveis":7,"cursosConcluidos":1,"cursosConquistados":1,"moedas":0,"moedasEmCripto":0,"topicosNoForum":0,"comentariosNoForum":0,"voucherProjetoReal":false}
+
+
+--- log do Core no modo sincrono:
+2026-10-31T19:01:50.306-03:00 ERROR 4964 --- [gamificacao-ead] [nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] th
+java.net.ConnectException: Connection refused

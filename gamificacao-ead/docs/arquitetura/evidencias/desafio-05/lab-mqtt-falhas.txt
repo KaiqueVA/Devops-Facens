@@ -1,0 +1,49 @@
+
+=== 0. Aluno que vai usar a bancada ===
+aluno id=1
+  Core /iot/eventos/resumo: {"armazenados":0,"invalidos":0,"novos":0,"duplicados":0}
+
+=== 1. Caminho feliz: dispositivo -> MQTT (QoS 1) -> gateway -> Core ===
+[bancada-03] publicou {"id":"d15bd1bd32d04c9b","d":"bancada-03","t":"P","a":1,"ts":1793484601,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] publicou {"id":"3ff7b00e68df4648","d":"bancada-03","t":"I","a":1,"ts":1793484602,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] publicou {"id":"f05870d410124024","d":"bancada-03","t":"F","a":1,"ts":1793484602,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+  Core /iot/eventos/resumo: {"armazenados":3,"invalidos":0,"novos":3,"duplicados":0}
+
+=== 2. GATEWAY FORA: o broker guarda as mensagens na sessao persistente do gateway ===
+[bancada-03] publicou {"id":"09ef834801e94a93","d":"bancada-03","t":"P","a":1,"ts":1793484604,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] publicou {"id":"63e6911492fb4c5c","d":"bancada-03","t":"I","a":1,"ts":1793484605,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] publicou {"id":"ba6ba9f8c2fe4508","d":"bancada-03","t":"F","a":1,"ts":1793484605,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+  Core /iot/eventos/resumo: {"armazenados":3,"invalidos":0,"novos":3,"duplicados":0}
+  (nada chegou ao Core ainda)
+  gateway religado:
+  Core /iot/eventos/resumo: {"armazenados":6,"invalidos":0,"novos":6,"duplicados":0}
+
+=== 3. CORE FORA: o gateway retem (sem PUBACK) e tenta de novo com backoff ===
+[bancada-03] publicou {"id":"411fc91f28c040df","d":"bancada-03","t":"P","a":1,"ts":1793484611,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] publicou {"id":"52b47fd2d8634cb6","d":"bancada-03","t":"I","a":1,"ts":1793484611,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+  Core religando...
+  Core /iot/eventos/resumo: {"invalidos":0,"armazenados":8,"duplicados":0,"novos":2}
+
+=== 4. REDE DO DISPOSITIVO CAI: buffer local no dispositivo e descarga ao reconectar ===
+[bancada-03] publicou {"id":"be62eaea6ac2454c","d":"bancada-03","t":"P","a":1,"ts":1793484627,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] publicou {"id":"24816484a3004b4d","d":"bancada-03","t":"I","a":1,"ts":1793484627,"at":"ARQ-LAB-1"} (89 bytes, QoS 1)
+[bancada-03] REDE CAIU por 4s; eventos vao para o buffer local
+[bancada-03] SEM REDE: guardou no buffer (1) {"id":"93b952ba1a0d4e3b","d":"bancada-03","t":"F","a":1,"ts":1793484628,"at":"ARQ-LAB-1"}
+[bancada-03] SEM REDE: guardou no buffer (2) {"id":"2df6c877e527440f","d":"bancada-03","t":"P","a":1,"ts":1793484628,"at":"ARQ-LAB-1"}
+[bancada-03] REDE VOLTOU; descarregando 2 eventos do buffer
+[bancada-03] publicou (do buffer) {"id":"93b952ba1a0d4e3b","d":"bancada-03","t":"F","a":1,"ts":1793484628,"at":"ARQ-LAB-1"}
+[bancada-03] publicou (do buffer) {"id":"2df6c877e527440f","d":"bancada-03","t":"P","a":1,"ts":1793484628,"at":"ARQ-LAB-1"}
+  Core /iot/eventos/resumo: {"invalidos":0,"armazenados":12,"duplicados":0,"novos":6}
+
+=== 5. REENVIO DUPLICADO (dispositivo nao recebeu o PUBACK e publica de novo o mesmo id) ===
+[bancada-03] REENVIOU o evento d15bd1bd32d04c9b (72 bytes)
+  Core /iot/eventos/resumo: {"invalidos":0,"armazenados":12,"duplicados":1,"novos":6}
+  (armazenados nao muda; duplicados +1)
+
+=== 6. PAYLOAD INVALIDO: o gateway nao insiste, publica na DLQ (lab/dlq) ===
+[bancada-03] publicou payload INVALIDO: {"id": "91ca2ebdce9148fe", "d": "bancada-03", "t": "X", "a": 1, "ts": 1793484638}
+  mensagem na DLQ: {"topico": "lab/LAB-ARQ/bancada-03/eventos", "payload": "{\"id\": \"91ca2ebdce9148fe\", \"d\": \"bancada-03\", \"t\": \"X\", \"a\": 1, \"ts\": 1793484638}", "motivo": "tipo desconhecido: X"}
+
+=== Resultado: 12 eventos publicados com sucesso -> 12 armazenados, 0 perdidos, duplicata sem efeito ===
+  Core /iot/eventos/resumo: {"invalidos":0,"armazenados":12,"duplicados":1,"novos":6}
+  analytics (encaminhado ao ecossistema pelo outbox): {"conclusoes":0,"conquistas":0,"promocoesPremium":0,"mediaGeral":0.0,"eventosDeLaboratorio":12}

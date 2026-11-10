@@ -1,0 +1,20 @@
+
+=== 19:18:50 1. Alvos do Prometheus (um por componente) ===
+  ia-service   up    http://localhost:8000/metrics/
+  iot-gateway  up    http://localhost:9101/metrics
+
+=== 19:18:50 2. Trafego normal (recomendacoes + ranking a cada 0,5 s) ===
+  (nenhum alerta ativo)
+
+=== 19:19:20 3. PROVOCANDO: ia-service parado (kill $(cat ia.pid)) com trafego continuo ===
+  +10s firing: nenhum
+  +20s firing: nenhum
+  +30s firing: nenhum
+  +40s firing: ComponenteFora
+  ComponenteFora             FIRING   job=ia-service   ADR-006 (deploy independente: cada componente e observado separadamente)
+>>> TIRE OS PRINTS AGORA: Grafana (paineis ADR-003 em vermelho) e Prometheus > Alerts (FIRING)
+
+=== 19:20:01 4. RECUPERANDO: ia-service de volta (ia-start.sh) ===
+  +10s firing: nenhum
+  (nenhum alerta ativo)
+>>> TIRE OS PRINTS: alertas resolvidos e paineis voltando ao verde

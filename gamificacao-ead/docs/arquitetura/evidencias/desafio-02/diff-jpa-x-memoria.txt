@@ -1,0 +1,6 @@
+# Diferenca entre as respostas da API com adapter JPA (<) e em memoria (>)
+# (unica diferenca esperada: o ranking, que le a tabela por SQL - ADR-001)
+27c27
+< [{"posicao":1,"alunoId":1,"email":"ana@facens.br","plano":"BASICO","cursosConquistados":1,"moedas":0},{"posicao":2,"alunoId":2,"email":"bia@facens.br","plano":"BASICO","cursosConquistados":0,"moedas":0}]
+---
+> []
